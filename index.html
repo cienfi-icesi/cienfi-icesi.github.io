@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workshops de R | CIENFI - Universidad Icesi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #5B68DF;
+            --deep-blue: #2E3192;
+            --accent-blue: #3D4BC7;
+            --light-blue: #E8EBFF;
+            --purple-accent: #7C3AED;
+            --bg-white: #FFFFFF;
+            --bg-gray: #F8F9FB;
+            --text-dark: #1A202C;
+            --text-gray: #4A5568;
+            --text-muted: #718096;
+            --border-light: #E2E8F0;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-lg: 0 10px 30px rgba(0,0,0,0.12);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg-white);
+            color: var(--text-dark);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        .bg-accent {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 600px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.04) 0%, rgba(118, 75, 162, 0.04) 100%);
+            z-index: 0;
+            pointer-events: none;
+        }
+        
+        .bg-accent::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(91, 104, 223, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 20s ease-in-out infinite;
+        }
+        
+        .bg-accent::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(124, 58, 237, 0.06) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 15s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(50px, -50px) scale(1.1); }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        header {
+            padding: 2rem 0 3rem;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            padding: 2.5rem;
+            background: var(--bg-white);
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-light);
+        }
+
+        .logo-container {
+            flex-shrink: 0;
+        }
+
+        .logo-container img {
+            height: 70px;
+        }
+
+        .header-text h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-blue), var(--purple-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .header-text p {
+            font-size: 1rem;
+            color: var(--text-gray);
+            font-weight: 500;
+        }
+
+        nav {
+            margin: 2.5rem 0;
+            animation: fadeIn 1s ease-out 0.3s backwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            background: var(--bg-white);
+            padding: 1rem;
+            border-radius: 15px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+        }
+
+        .nav-link {
+            padding: 0.75rem 1.5rem;
+            background: var(--bg-gray);
+            color: var(--text-gray);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .nav-link:hover {
+            background: var(--light-blue);
+            color: var(--primary-blue);
+            border-color: var(--primary-blue);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .section {
+            margin-bottom: 4rem;
+            animation: fadeInUp 0.8s ease-out backwards;
+        }
+
+        .section:nth-child(2) { animation-delay: 0.2s; }
+        .section:nth-child(3) { animation-delay: 0.4s; }
+        .section:nth-child(4) { animation-delay: 0.6s; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--text-dark);
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 50px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-blue), var(--purple-accent));
+            border-radius: 2px;
+        }
+
+        .card {
+            background: var(--bg-white);
+            border: 1px solid var(--border-light);
+            padding: 2.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 16px;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-4px);
+            border-color: var(--primary-blue);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--primary-blue);
+        }
+
+        .card-description {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: var(--text-gray);
+            margin-bottom: 1rem;
+        }
+
+        .hero-card {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--purple-accent) 100%);
+            color: white;
+            padding: 3rem;
+            border-radius: 20px;
+            margin-bottom: 3rem;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .hero-card .card-title {
+            color: white;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-card .card-description {
+            color: rgba(255, 255, 255, 0.95);
+            font-size: 1.05rem;
+            line-height: 1.9;
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .video-card {
+            background: var(--bg-white);
+            border: 1px solid var(--border-light);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .video-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-6px);
+            border-color: var(--primary-blue);
+        }
+
+        .video-placeholder {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: linear-gradient(135deg, var(--light-blue) 0%, rgba(124, 58, 237, 0.1) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: var(--primary-blue);
+            font-weight: 600;
+            position: relative;
+        }
+
+        .video-placeholder::before {
+            content: '▶';
+            font-size: 3rem;
+            opacity: 0.3;
+            position: absolute;
+        }
+
+        .video-content {
+            padding: 1.5rem;
+        }
+
+        .video-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+
+        .video-description {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.65rem 1.3rem;
+            background: var(--primary-blue);
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .btn:hover {
+            background: var(--deep-blue);
+            transform: scale(1.05);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary-blue);
+            color: var(--primary-blue);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .info-box {
+            background: var(--light-blue);
+            border-left: 4px solid var(--primary-blue);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+        }
+
+        .info-box strong {
+            color: var(--primary-blue);
+            font-weight: 700;
+        }
+
+        .info-box p {
+            color: var(--text-gray);
+        }
+
+        .schedule-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 2rem;
+            background: var(--bg-white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+        }
+
+        .schedule-table th,
+        .schedule-table td {
+            padding: 1.2rem;
+            text-align: left;
+        }
+
+        .schedule-table th {
+            background: var(--bg-gray);
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            border-bottom: 2px solid var(--border-light);
+        }
+
+        .schedule-table tr:not(:last-child) td {
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .schedule-table tr:hover td {
+            background: var(--bg-gray);
+        }
+
+        .schedule-table td {
+            color: var(--text-gray);
+        }
+
+        .contact-card {
+            background: linear-gradient(135deg, rgba(91, 104, 223, 0.08) 0%, rgba(124, 58, 237, 0.08) 100%);
+            border: 2px solid var(--light-blue);
+            padding: 2.5rem;
+            border-radius: 16px;
+            text-align: center;
+        }
+
+        .contact-email {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2rem;
+            background: var(--bg-white);
+            border: 2px solid var(--primary-blue);
+            border-radius: 12px;
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            margin: 1rem 0;
+        }
+
+        .contact-email:hover {
+            background: var(--primary-blue);
+            color: white;
+            transform: scale(1.05);
+            box-shadow: var(--shadow-md);
+        }
+
+        footer {
+            margin-top: 6rem;
+            padding: 3rem 0;
+            border-top: 1px solid var(--border-light);
+            text-align: center;
+            color: var(--text-muted);
+            background: var(--bg-gray);
+        }
+
+        footer p {
+            font-size: 0.9rem;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.4rem 0.9rem;
+            background: var(--light-blue);
+            color: var(--primary-blue);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin: 0.25rem;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                padding: 2rem;
+            }
+
+            .header-text h1 {
+                font-size: 2.2rem;
+            }
+
+            .video-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+            }
+
+            .nav-links {
+                flex-direction: column;
+            }
+
+            .nav-link {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-accent"></div>
+    
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div class="logo-container">
+                    <img src="logo_icesi.png" alt="Universidad Icesi Logo">
+                </div>
+                <div class="header-text">
+                    <h1>Workshops de R</h1>
+                    <p>Centro de Investigación en Economía y Finanzas · Universidad Icesi</p>
+                </div>
+            </div>
+        </header>
+
+        <nav>
+            <div class="nav-links">
+                <a href="#programa" class="nav-link">Programa</a>
+                <a href="#sesiones" class="nav-link">Sesiones</a>
+                <a href="#material" class="nav-link">Material</a>
+                <a href="#horarios" class="nav-link">Horarios y Salones</a>
+                <a href="#contacto" class="nav-link">Contacto</a>
+            </div>
+        </nav>
+
+        <main>
+            <section class="section" id="programa">
+                <h2 class="section-title">Descripción del Programa</h2>
+                <div class="hero-card">
+                    <h3 class="card-title">Aprende R desde cero y potencia tus habilidades analíticas</h3>
+                    <p class="card-description">
+                        Este programa de workshops propone una introducción práctica al uso del lenguaje de programación R. A lo largo de las sesiones, los participantes adquirirán habilidades prácticas para analizar datos, crear visualizaciones claras, automatizar procesos y comunicar resultados de forma efectiva, utilizando herramientas y flujos de trabajo ampliamente adoptados en contextos académicos y profesionales.
+                    </p>
+                    <p class="card-description">
+                        La serie está dirigida a estudiantes de distintas áreas que desean iniciarse en la programación y fortalecer sus habilidades analíticas aplicadas al trabajo con datos. No se requiere experiencia previa, ya que los talleres están diseñados para acompañar el aprendizaje desde cero; al mismo tiempo, ofrecen un espacio valioso para quienes ya han tenido un primer contacto con R y buscan afianzar sus conocimientos.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title">¿Qué aprenderás?</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                        <div>
+                            <span class="badge">📊 Análisis de datos</span>
+                            <span class="badge">📈 Visualización</span>
+                        </div>
+                        <div>
+                            <span class="badge">🤖 Automatización</span>
+                            <span class="badge">📑 Reportes</span>
+                        </div>
+                        <div>
+                            <span class="badge">📉 Estadística aplicada</span>
+                            <span class="badge">💻 Programación</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section" id="sesiones">
+                <h2 class="section-title">Sesiones del Workshop</h2>
+                
+                <div class="video-grid">
+                    <div class="video-card">
+                        <div class="video-placeholder">
+                            <span>Sesión 1</span>
+                        </div>
+                        <div class="video-content">
+                            <h3 class="video-title">Introducción a R</h3>
+                            <p class="video-description">
+                                Fundamentos de R, RStudio y estructuras de datos básicas.
+                            </p>
+                            <a href="#" class="btn">Ver Material</a>
+                        </div>
+                    </div>
+
+                    <div class="video-card">
+                        <div class="video-placeholder">
+                            <span>Sesión 2</span>
+                        </div>
+                        <div class="video-content">
+                            <h3 class="video-title">Manipulación de Datos</h3>
+                            <p class="video-description">
+                                Tidyverse, dplyr y transformación de datos.
+                            </p>
+                            <a href="#" class="btn">Ver Material</a>
+                        </div>
+                    </div>
+
+                    <div class="video-card">
+                        <div class="video-placeholder">
+                            <span>Sesión 3</span>
+                        </div>
+                        <div class="video-content">
+                            <h3 class="video-title">Visualización de Datos</h3>
+                            <p class="video-description">
+                                ggplot2 y creación de gráficos profesionales.
+                            </p>
+                            <a href="#" class="btn">Ver Material</a>
+                        </div>
+                    </div>
+
+                    <div class="video-card">
+                        <div class="video-placeholder">
+                            <span>Sesión 4</span>
+                        </div>
+                        <div class="video-content">
+                            <h3 class="video-title">Análisis Estadístico</h3>
+                            <p class="video-description">
+                                Modelos estadísticos y análisis de regresión.
+                            </p>
+                            <a href="#" class="btn">Ver Material</a>
+                        </div>
+                    </div>
+
+                    <div class="video-card">
+                        <div class="video-placeholder">
+                            <span>Sesión 5</span>
+                        </div>
+                        <div class="video-content">
+                            <h3 class="video-title">Series Temporales</h3>
+                            <p class="video-description">
+                                Análisis de datos financieros y series de tiempo.
+                            </p>
+                            <a href="#" class="btn">Ver Material</a>
+                        </div>
+                    </div>
+
+                    <div class="video-card">
+                        <div class="video-placeholder">
+                            <span>Sesión 6</span>
+                        </div>
+                        <div class="video-content">
+                            <h3 class="video-title">Proyectos Aplicados</h3>
+                            <p class="video-description">
+                                Integración de conceptos y aplicación a casos reales.
+                            </p>
+                            <a href="#" class="btn">Ver Material</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section" id="material">
+                <h2 class="section-title">Material de Apoyo</h2>
+                
+                <div class="card">
+                    <h3 class="card-title">Repositorio de Código</h3>
+                    <p class="card-description">
+                        Todo el código, datasets y notebooks utilizados en las sesiones están disponibles en nuestro repositorio de GitLab.
+                    </p>
+                    <a href="#" class="btn">Ir al Repositorio</a>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title">Recursos Adicionales</h3>
+                    <p class="card-description">
+                        Documentación, tutoriales complementarios y enlaces a recursos externos para profundizar en cada tema.
+                    </p>
+                    <div style="margin-top: 1rem;">
+                        <a href="https://r4ds.had.co.nz/" class="btn btn-outline" style="margin: 0.25rem;">R for Data Science</a>
+                        <a href="https://ggplot2.tidyverse.org/" class="btn btn-outline" style="margin: 0.25rem;">ggplot2 Documentation</a>
+                        <a href="https://www.tidyverse.org/" class="btn btn-outline" style="margin: 0.25rem;">Tidyverse</a>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section" id="horarios">
+                <h2 class="section-title">Horarios y Salones</h2>
+                
+                <table class="schedule-table">
+                    <thead>
+                        <tr>
+                            <th>Sesión</th>
+                            <th>Fecha</th>
+                            <th>Horario</th>
+                            <th>Salón</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Sesión 1</strong></td>
+                            <td>Por definir</td>
+                            <td>Por definir</td>
+                            <td>Por definir</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sesión 2</strong></td>
+                            <td>Por definir</td>
+                            <td>Por definir</td>
+                            <td>Por definir</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sesión 3</strong></td>
+                            <td>Por definir</td>
+                            <td>Por definir</td>
+                            <td>Por definir</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sesión 4</strong></td>
+                            <td>Por definir</td>
+                            <td>Por definir</td>
+                            <td>Por definir</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sesión 5</strong></td>
+                            <td>Por definir</td>
+                            <td>Por definir</td>
+                            <td>Por definir</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sesión 6</strong></td>
+                            <td>Por definir</td>
+                            <td>Por definir</td>
+                            <td>Por definir</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="info-box" style="margin-top: 2rem;">
+                    <p>
+                        <strong>📌 Nota importante:</strong> Los horarios y salones se actualizarán próximamente. Por favor, revisa esta página regularmente o contacta con nosotros para recibir notificaciones.
+                    </p>
+                </div>
+            </section>
+
+            <section class="section" id="contacto">
+                <h2 class="section-title">Contacto</h2>
+                
+                <div class="contact-card">
+                    <h3 class="card-title" style="color: var(--text-dark); margin-bottom: 1rem;">¿Tienes preguntas?</h3>
+                    <p class="card-description" style="max-width: 600px; margin: 0 auto 2rem;">
+                        Para consultas, dudas o información adicional sobre los workshops, puedes contactarnos a través de:
+                    </p>
+                    
+                    <a href="mailto:cienfi@icesi.edu.co" class="contact-email">
+                        <span style="font-size: 1.5rem;">✉</span>
+                        <span>cienfi@icesi.edu.co</span>
+                    </a>
+
+                    <p class="card-description" style="max-width: 700px; margin: 2rem auto 0;">
+                        Estaremos encantados de responder tus preguntas y apoyarte en tu proceso de aprendizaje. No dudes en escribirnos para obtener más información sobre los workshops, requisitos previos o cualquier aspecto relacionado con las sesiones.
+                    </p>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p style="font-weight: 600; margin-bottom: 0.5rem;">© 2024 Centro de Investigación en Economía y Finanzas - Universidad Icesi</p>
+            <p>Workshops de R</p>
+        </footer>
+    </div>
+
+    <script>
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.section, .card, .video-card').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
