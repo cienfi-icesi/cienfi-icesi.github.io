@@ -23,6 +23,7 @@
             --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
             --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
             --shadow-lg: 0 10px 30px rgba(0,0,0,0.12);
+            --gradient-purple: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
         }
 
         * {
@@ -106,35 +107,29 @@
         .header-content {
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 2rem;
-            padding: 2.5rem;
+            padding: 3rem 2.5rem;
             background: var(--bg-white);
-            border-radius: 20px;
+            border-radius: 24px;
             box-shadow: var(--shadow-lg);
             border: 1px solid var(--border-light);
-        }
-
-        .logo-container {
-            flex-shrink: 0;
-        }
-
-        .logo-container img {
-            height: 70px;
+            text-align: center;
         }
 
         .header-text h1 {
-            font-size: 3rem;
+            font-size: 3.5rem;
             font-weight: 800;
-            background: linear-gradient(135deg, var(--primary-blue), var(--purple-accent));
+            background: var(--gradient-purple);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
             letter-spacing: -0.02em;
         }
 
         .header-text p {
-            font-size: 1rem;
+            font-size: 1.1rem;
             color: var(--text-gray);
             font-weight: 500;
         }
@@ -155,19 +150,20 @@
             flex-wrap: wrap;
             background: var(--bg-white);
             padding: 1rem;
-            border-radius: 15px;
+            border-radius: 16px;
             box-shadow: var(--shadow-sm);
             border: 1px solid var(--border-light);
+            justify-content: center;
         }
 
         .nav-link {
-            padding: 0.75rem 1.5rem;
+            padding: 0.85rem 1.75rem;
             background: var(--bg-gray);
             color: var(--text-gray);
             text-decoration: none;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             font-weight: 600;
-            border-radius: 10px;
+            border-radius: 12px;
             transition: all 0.3s ease;
             border: 1px solid transparent;
         }
@@ -181,7 +177,7 @@
         }
 
         .section {
-            margin-bottom: 4rem;
+            margin-bottom: 5rem;
             animation: fadeInUp 0.8s ease-out backwards;
         }
 
@@ -201,9 +197,9 @@
         }
 
         .section-title {
-            font-size: 2.2rem;
+            font-size: 2.5rem;
             font-weight: 700;
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
             color: var(--text-dark);
             position: relative;
             display: inline-block;
@@ -212,11 +208,11 @@
         .section-title::after {
             content: '';
             position: absolute;
-            bottom: -8px;
+            bottom: -10px;
             left: 0;
-            width: 50px;
+            width: 60px;
             height: 4px;
-            background: linear-gradient(90deg, var(--primary-blue), var(--purple-accent));
+            background: var(--gradient-purple);
             border-radius: 2px;
         }
 
@@ -225,7 +221,7 @@
             border: 1px solid var(--border-light);
             padding: 2.5rem;
             margin-bottom: 1.5rem;
-            border-radius: 16px;
+            border-radius: 20px;
             transition: all 0.3s ease;
             box-shadow: var(--shadow-sm);
         }
@@ -237,111 +233,169 @@
         }
 
         .card-title {
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             font-weight: 700;
-            margin-bottom: 1rem;
+            margin-bottom: 1.25rem;
             color: var(--primary-blue);
         }
 
         .card-description {
-            font-size: 1.05rem;
+            font-size: 1.1rem;
             line-height: 1.8;
             color: var(--text-gray);
             margin-bottom: 1rem;
         }
 
         .hero-card {
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--purple-accent) 100%);
+            background: var(--gradient-purple);
             color: white;
-            padding: 3rem;
-            border-radius: 20px;
+            padding: 3.5rem;
+            border-radius: 24px;
             margin-bottom: 3rem;
             box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            border-radius: 50%;
         }
 
         .hero-card .card-title {
             color: white;
-            font-size: 1.8rem;
+            font-size: 2rem;
             margin-bottom: 1.5rem;
+            position: relative;
         }
 
         .hero-card .card-description {
             color: rgba(255, 255, 255, 0.95);
-            font-size: 1.05rem;
+            font-size: 1.15rem;
             line-height: 1.9;
-        }
-
-        .video-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2rem;
-        }
-
-        .video-card {
-            background: var(--bg-white);
-            border: 1px solid var(--border-light);
-            border-radius: 16px;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .video-card:hover {
-            box-shadow: var(--shadow-lg);
-            transform: translateY(-6px);
-            border-color: var(--primary-blue);
-        }
-
-        .video-placeholder {
-            width: 100%;
-            aspect-ratio: 16/9;
-            background: linear-gradient(135deg, var(--light-blue) 0%, rgba(124, 58, 237, 0.1) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1rem;
-            color: var(--primary-blue);
-            font-weight: 600;
             position: relative;
         }
 
-        .video-placeholder::before {
-            content: '▶';
-            font-size: 3rem;
-            opacity: 0.3;
+        /* Sessions Grid */
+        .sessions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .session-card {
+            background: var(--bg-white);
+            border: 2px solid var(--border-light);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+        }
+
+        .session-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(91, 104, 223, 0.2);
+            border-color: var(--primary-blue);
+        }
+
+        .session-header {
+            background: var(--gradient-purple);
+            padding: 2rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .session-header::before {
+            content: '';
             position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            border-radius: 50%;
         }
 
-        .video-content {
-            padding: 1.5rem;
+        .session-number {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            position: relative;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .video-title {
-            font-size: 1.2rem;
+        .session-header h3 {
+            font-size: 1.75rem;
             font-weight: 700;
             margin-bottom: 0.5rem;
-            color: var(--text-dark);
+            position: relative;
         }
 
-        .video-description {
-            font-size: 0.95rem;
-            color: var(--text-muted);
-            margin-bottom: 1rem;
-            line-height: 1.6;
+        .session-header p {
+            font-size: 1rem;
+            opacity: 0.95;
+            position: relative;
+        }
+
+        .session-content {
+            padding: 2rem;
+        }
+
+        .session-topics {
+            margin: 1.25rem 0 1.75rem;
+        }
+
+        .topic-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 0.6rem 0;
+            color: var(--text-gray);
+            font-size: 0.98rem;
+            line-height: 1.5;
+        }
+
+        .topic-item::before {
+            content: '✓';
+            display: inline-block;
+            min-width: 22px;
+            height: 22px;
+            background: var(--light-blue);
+            color: var(--primary-blue);
+            border-radius: 50%;
+            text-align: center;
+            line-height: 22px;
+            margin-right: 0.85rem;
+            font-weight: 700;
+            flex-shrink: 0;
+            font-size: 0.85rem;
+            margin-top: 2px;
         }
 
         .btn {
             display: inline-block;
-            padding: 0.65rem 1.3rem;
+            padding: 0.9rem 2rem;
             background: var(--primary-blue);
             color: white;
             text-decoration: none;
-            font-size: 0.9rem;
+            font-size: 1rem;
             font-weight: 600;
-            border-radius: 8px;
+            border-radius: 12px;
             transition: all 0.3s ease;
             border: none;
+            cursor: pointer;
         }
 
         .btn:hover {
@@ -361,12 +415,79 @@
             color: white;
         }
 
+        /* Team Section */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2.5rem;
+        }
+
+        .team-member {
+            background: var(--bg-white);
+            border: 1px solid var(--border-light);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .team-member:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-blue);
+        }
+
+        .team-avatar {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 1.5rem;
+            border-radius: 50%;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            position: relative;
+        }
+
+        /* Si hay imagen */
+        .team-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Si NO hay imagen (fallback con iniciales) */
+        .team-avatar-fallback {
+            width: 100%;
+            height: 100%;
+            background: var(--gradient-purple);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .team-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .team-role {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
         .info-box {
             background: var(--light-blue);
             border-left: 4px solid var(--primary-blue);
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-            border-radius: 8px;
+            padding: 1.75rem;
+            margin: 2rem 0;
+            border-radius: 12px;
         }
 
         .info-box strong {
@@ -376,6 +497,7 @@
 
         .info-box p {
             color: var(--text-gray);
+            line-height: 1.8;
         }
 
         .schedule-table {
@@ -384,7 +506,7 @@
             border-spacing: 0;
             margin-top: 2rem;
             background: var(--bg-white);
-            border-radius: 12px;
+            border-radius: 16px;
             overflow: hidden;
             box-shadow: var(--shadow-sm);
             border: 1px solid var(--border-light);
@@ -392,13 +514,13 @@
 
         .schedule-table th,
         .schedule-table td {
-            padding: 1.2rem;
+            padding: 1.4rem;
             text-align: left;
         }
 
         .schedule-table th {
             background: var(--bg-gray);
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             font-weight: 700;
             color: var(--text-dark);
             border-bottom: 2px solid var(--border-light);
@@ -414,13 +536,14 @@
 
         .schedule-table td {
             color: var(--text-gray);
+            font-size: 1.05rem;
         }
 
         .contact-card {
             background: linear-gradient(135deg, rgba(91, 104, 223, 0.08) 0%, rgba(124, 58, 237, 0.08) 100%);
             border: 2px solid var(--light-blue);
-            padding: 2.5rem;
-            border-radius: 16px;
+            padding: 3rem;
+            border-radius: 20px;
             text-align: center;
         }
 
@@ -428,16 +551,16 @@
             display: inline-flex;
             align-items: center;
             gap: 0.75rem;
-            padding: 1rem 2rem;
+            padding: 1.2rem 2.5rem;
             background: var(--bg-white);
             border: 2px solid var(--primary-blue);
             border-radius: 12px;
             color: var(--primary-blue);
             text-decoration: none;
             font-weight: 700;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             transition: all 0.3s ease;
-            margin: 1rem 0;
+            margin: 1.5rem 0;
         }
 
         .contact-email:hover {
@@ -457,37 +580,32 @@
         }
 
         footer p {
-            font-size: 0.9rem;
+            font-size: 0.95rem;
+            line-height: 1.6;
         }
 
         .badge {
             display: inline-block;
-            padding: 0.4rem 0.9rem;
+            padding: 0.5rem 1rem;
             background: var(--light-blue);
             color: var(--primary-blue);
             border-radius: 20px;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             font-weight: 600;
             margin: 0.25rem;
         }
 
         @media (max-width: 768px) {
             .header-content {
-                flex-direction: column;
-                text-align: center;
-                padding: 2rem;
+                padding: 2.5rem 1.5rem;
             }
 
             .header-text h1 {
-                font-size: 2.2rem;
-            }
-
-            .video-grid {
-                grid-template-columns: 1fr;
+                font-size: 2.5rem;
             }
 
             .section-title {
-                font-size: 1.8rem;
+                font-size: 2rem;
             }
 
             .nav-links {
@@ -496,6 +614,24 @@
 
             .nav-link {
                 text-align: center;
+            }
+
+            .sessions-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-card {
+                padding: 2.5rem 1.5rem;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .sessions-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -506,9 +642,6 @@
     <div class="container">
         <header>
             <div class="header-content">
-                <div class="logo-container">
-                    <img src="logo_icesi.png" alt="Universidad Icesi Logo">
-                </div>
                 <div class="header-text">
                     <h1>Workshops de R</h1>
                     <p>Centro de Investigación en Economía y Finanzas · Universidad Icesi</p>
@@ -520,152 +653,187 @@
             <div class="nav-links">
                 <a href="#programa" class="nav-link">Programa</a>
                 <a href="#sesiones" class="nav-link">Sesiones</a>
-                <a href="#material" class="nav-link">Material</a>
-                <a href="#horarios" class="nav-link">Horarios y Salones</a>
+                <a href="#equipo" class="nav-link">Equipo</a>
+                <a href="#horarios" class="nav-link">Horarios</a>
                 <a href="#contacto" class="nav-link">Contacto</a>
             </div>
         </nav>
 
         <main>
+            <!-- Programa -->
             <section class="section" id="programa">
-                <h2 class="section-title">Descripción del Programa</h2>
+                <h2 class="section-title">Sobre el Programa</h2>
                 <div class="hero-card">
-                    <h3 class="card-title">Aprende R desde cero y potencia tus habilidades analíticas</h3>
+                    <h3 class="card-title">Aprende R y potencia tus habilidades analíticas</h3>
                     <p class="card-description">
-                        Este programa de workshops propone una introducción práctica al uso del lenguaje de programación R. A lo largo de las sesiones, los participantes adquirirán habilidades prácticas para analizar datos, crear visualizaciones claras, automatizar procesos y comunicar resultados de forma efectiva, utilizando herramientas y flujos de trabajo ampliamente adoptados en contextos académicos y profesionales.
+                        Introducción práctica al lenguaje de programación R. Adquiere habilidades para analizar datos, 
+                        crear visualizaciones, automatizar procesos y comunicar resultados de forma efectiva.
                     </p>
                     <p class="card-description">
-                        La serie está dirigida a estudiantes de distintas áreas que desean iniciarse en la programación y fortalecer sus habilidades analíticas aplicadas al trabajo con datos. No se requiere experiencia previa, ya que los talleres están diseñados para acompañar el aprendizaje desde cero; al mismo tiempo, ofrecen un espacio valioso para quienes ya han tenido un primer contacto con R y buscan afianzar sus conocimientos.
+                        Dirigido a estudiantes que desean iniciarse en la programación y fortalecer sus habilidades 
+                        analíticas. No se requiere experiencia previa.
                     </p>
                 </div>
 
                 <div class="card">
                     <h3 class="card-title">¿Qué aprenderás?</h3>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-top: 1rem;">
-                        <div>
-                            <span class="badge">📊 Análisis de datos</span>
-                            <span class="badge">📈 Visualización</span>
-                        </div>
-                        <div>
-                            <span class="badge">🤖 Automatización</span>
-                            <span class="badge">📑 Reportes</span>
-                        </div>
-                        <div>
-                            <span class="badge">📉 Estadística aplicada</span>
-                            <span class="badge">💻 Programación</span>
-                        </div>
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.5rem;">
+                        <span class="badge">📊 Análisis de datos</span>
+                        <span class="badge">📈 Visualización</span>
+                        <span class="badge">🤖 Automatización</span>
+                        <span class="badge">📑 Reportes dinámicos</span>
+                        <span class="badge">📉 Estadística aplicada</span>
+                        <span class="badge">💻 Programación en R</span>
                     </div>
                 </div>
             </section>
 
+            <!-- Sesiones -->
             <section class="section" id="sesiones">
-                <h2 class="section-title">Sesiones del Workshop</h2>
+                <h2 class="section-title">Sesiones Disponibles</h2>
                 
-                <div class="video-grid">
-                    <div class="video-card">
-                        <div class="video-placeholder">
-                            <span>Sesión 1</span>
+                <div class="sessions-grid">
+                    <!-- Sesión 1: Instalación -->
+                    <div class="session-card">
+                        <div class="session-header">
+                            <span class="session-number">Sesión 0</span>
+                            <h3>Instalación de R</h3>
+                            <p>Configuración del entorno de trabajo</p>
                         </div>
-                        <div class="video-content">
-                            <h3 class="video-title">Introducción a R</h3>
-                            <p class="video-description">
-                                Fundamentos de R, RStudio y estructuras de datos básicas.
-                            </p>
-                            <a href="#" class="btn">Ver Material</a>
-                        </div>
-                    </div>
-
-                    <div class="video-card">
-                        <div class="video-placeholder">
-                            <span>Sesión 2</span>
-                        </div>
-                        <div class="video-content">
-                            <h3 class="video-title">Manipulación de Datos</h3>
-                            <p class="video-description">
-                                Tidyverse, dplyr y transformación de datos.
-                            </p>
-                            <a href="#" class="btn">Ver Material</a>
+                        
+                        <div class="session-content">
+                            <div class="session-topics">
+                                <div class="topic-item">Descarga e instalación de R</div>
+                                <div class="topic-item">Instalación de RStudio</div>
+                                <div class="topic-item">Configuración inicial</div>
+                                <div class="topic-item">Primeros pasos con la interfaz</div>
+                                <div class="topic-item">Verificación de la instalación</div>
+                            </div>
+                            
+                            <!-- 👇 CAMBIA ESTE ENLACE para la guía de instalación -->
+                            <a href="#" class="btn">
+                                Ver Guía de Instalación →
+                            </a>
                         </div>
                     </div>
 
-                    <div class="video-card">
-                        <div class="video-placeholder">
-                            <span>Sesión 3</span>
+                    <!-- Sesión 2: Introducción a R -->
+                    <div class="session-card">
+                        <div class="session-header">
+                            <span class="session-number">Sesión 1</span>
+                            <h3>Introducción a R</h3>
+                            <p>Fundamentos esenciales del lenguaje</p>
                         </div>
-                        <div class="video-content">
-                            <h3 class="video-title">Visualización de Datos</h3>
-                            <p class="video-description">
-                                ggplot2 y creación de gráficos profesionales.
-                            </p>
-                            <a href="#" class="btn">Ver Material</a>
-                        </div>
-                    </div>
-
-                    <div class="video-card">
-                        <div class="video-placeholder">
-                            <span>Sesión 4</span>
-                        </div>
-                        <div class="video-content">
-                            <h3 class="video-title">Análisis Estadístico</h3>
-                            <p class="video-description">
-                                Modelos estadísticos y análisis de regresión.
-                            </p>
-                            <a href="#" class="btn">Ver Material</a>
-                        </div>
-                    </div>
-
-                    <div class="video-card">
-                        <div class="video-placeholder">
-                            <span>Sesión 5</span>
-                        </div>
-                        <div class="video-content">
-                            <h3 class="video-title">Series Temporales</h3>
-                            <p class="video-description">
-                                Análisis de datos financieros y series de tiempo.
-                            </p>
-                            <a href="#" class="btn">Ver Material</a>
+                        
+                        <div class="session-content">
+                            <div class="session-topics">
+                                <div class="topic-item">Interfaz de RStudio</div>
+                                <div class="topic-item">R como calculadora</div>
+                                <div class="topic-item">Tipos de datos</div>
+                                <div class="topic-item">Objetos y asignación</div>
+                                <div class="topic-item">Clase, tipo y estructura</div>
+                                <div class="topic-item">Environment: Gestión del espacio de trabajo</div>
+                                <div class="topic-item">¿Qué puede pasar en la consola?</div>
+                                <div class="topic-item">Funciones y sistemas de ayuda</div>
+                                <div class="topic-item">Paquetes y librerías</div>
+                                <div class="topic-item">Vectores y Data frames</div>
+                            </div>
+                            
+                            <!-- 👇 CAMBIA ESTE ENLACE para la introducción a R -->
+                            <a href="https://cienfi-icesi.github.io/workshop-r/intro-r/intro-r.html" class="btn" target="_blank">
+                                Acceder al Material →
+                            </a>
                         </div>
                     </div>
+                </div>
 
-                    <div class="video-card">
-                        <div class="video-placeholder">
-                            <span>Sesión 6</span>
+                <div class="info-box" style="margin-top: 3rem;">
+                    <p>
+                        <strong>📚 Próximamente:</strong> Nuevas sesiones sobre manipulación de datos con Tidyverse, 
+                        visualización con ggplot2, análisis estadístico y más. ¡Mantente atento!
+                    </p>
+                </div>
+            </section>
+
+            <!-- Equipo CIENFI -->
+            <section class="section" id="equipo">
+                <h2 class="section-title">Nuestro Equipo</h2>
+                
+                <div class="card" style="margin-bottom: 2.5rem;">
+                    <h3 class="card-title">Centro de Investigación en Economía y Finanzas</h3>
+                    <p class="card-description">
+                        Nuestro equipo está comprometido con la excelencia académica y la formación de habilidades 
+                        analíticas aplicadas al mundo real.
+                    </p>
+                </div>
+
+                <div class="team-grid">
+                    <!-- Miembro 1 -->
+                    <div class="team-member">
+                        <div class="team-avatar">
+                            <!-- 👇 OPCIÓN 1: Para usar FOTO, descomenta esta línea y agrega la ruta de la imagen -->
+                            <!-- <img src="images/eduard-martinez.jpg" alt="Eduard F. Martínez González"> -->
+                            
+                            <!-- 👇 OPCIÓN 2: Si NO hay foto, se usa este fallback con iniciales -->
+                            <div class="team-avatar-fallback">EM</div>
                         </div>
-                        <div class="video-content">
-                            <h3 class="video-title">Proyectos Aplicados</h3>
-                            <p class="video-description">
-                                Integración de conceptos y aplicación a casos reales.
-                            </p>
-                            <a href="#" class="btn">Ver Material</a>
+                        <div class="team-name">Eduard F. Martínez González</div>
+                        <div class="team-role">Investigador</div>
+                    </div>
+
+                    <!-- Miembro 2 -->
+                    <div class="team-member">
+                        <div class="team-avatar">
+                            <!-- 👇 Para agregar foto: <img src="images/laura-siniesterra.jpg" alt="Laura Siniesterra"> -->
+                            <div class="team-avatar-fallback">LS</div>
                         </div>
+                        <div class="team-name">Laura Siniesterra</div>
+                        <div class="team-role">Investigadora</div>
+                    </div>
+
+                    <!-- Miembro 3 -->
+                    <div class="team-member">
+                        <div class="team-avatar">
+                            <!-- 👇 Para agregar foto: <img src="images/miguel-torres.jpg" alt="Miguel Ángel Torres"> -->
+                            <div class="team-avatar-fallback">MT</div>
+                        </div>
+                        <div class="team-name">Miguel Ángel Torres</div>
+                        <div class="team-role">Investigador</div>
+                    </div>
+
+                    <!-- Miembro 4 -->
+                    <div class="team-member">
+                        <div class="team-avatar">
+                            <!-- 👇 Para agregar foto: <img src="images/fabian-vergel.jpg" alt="Fabián Andrés Vergel Ojeda"> -->
+                            <div class="team-avatar-fallback">FV</div>
+                        </div>
+                        <div class="team-name">Fabián Andrés Vergel Ojeda</div>
+                        <div class="team-role">Investigador</div>
+                    </div>
+
+                    <!-- Miembro 5 -->
+                    <div class="team-member">
+                        <div class="team-avatar">
+                            <!-- 👇 Para agregar foto: <img src="images/angela-guerrero.jpg" alt="Ángela Gabriela Guerrero Rodríguez"> -->
+                            <div class="team-avatar-fallback">AG</div>
+                        </div>
+                        <div class="team-name">Ángela Gabriela Guerrero Rodríguez</div>
+                        <div class="team-role">Investigadora</div>
+                    </div>
+
+                    <!-- Miembro 6 -->
+                    <div class="team-member">
+                        <div class="team-avatar">
+                            <!-- 👇 Para agregar foto: <img src="images/andrea-guerrero.jpg" alt="Andrea del Pilar Guerrero Delgado"> -->
+                            <div class="team-avatar-fallback">AD</div>
+                        </div>
+                        <div class="team-name">Andrea del Pilar Guerrero Delgado</div>
+                        <div class="team-role">Investigadora</div>
                     </div>
                 </div>
             </section>
 
-            <section class="section" id="material">
-                <h2 class="section-title">Material de Apoyo</h2>
-                
-                <div class="card">
-                    <h3 class="card-title">Repositorio de Código</h3>
-                    <p class="card-description">
-                        Todo el código, datasets y notebooks utilizados en las sesiones están disponibles en nuestro repositorio de GitLab.
-                    </p>
-                    <a href="#" class="btn">Ir al Repositorio</a>
-                </div>
-
-                <div class="card">
-                    <h3 class="card-title">Recursos Adicionales</h3>
-                    <p class="card-description">
-                        Documentación, tutoriales complementarios y enlaces a recursos externos para profundizar en cada tema.
-                    </p>
-                    <div style="margin-top: 1rem;">
-                        <a href="https://r4ds.had.co.nz/" class="btn btn-outline" style="margin: 0.25rem;">R for Data Science</a>
-                        <a href="https://ggplot2.tidyverse.org/" class="btn btn-outline" style="margin: 0.25rem;">ggplot2 Documentation</a>
-                        <a href="https://www.tidyverse.org/" class="btn btn-outline" style="margin: 0.25rem;">Tidyverse</a>
-                    </div>
-                </div>
-            </section>
-
+            <!-- Horarios -->
             <section class="section" id="horarios">
                 <h2 class="section-title">Horarios y Salones</h2>
                 
@@ -680,58 +848,44 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td><strong>Sesión 1</strong></td>
+                            <td><strong>Instalación de R</strong></td>
                             <td>Por definir</td>
                             <td>Por definir</td>
                             <td>Por definir</td>
                         </tr>
                         <tr>
-                            <td><strong>Sesión 2</strong></td>
+                            <td><strong>Introducción a R</strong></td>
                             <td>Por definir</td>
                             <td>Por definir</td>
                             <td>Por definir</td>
                         </tr>
                         <tr>
-                            <td><strong>Sesión 3</strong></td>
-                            <td>Por definir</td>
-                            <td>Por definir</td>
-                            <td>Por definir</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Sesión 4</strong></td>
-                            <td>Por definir</td>
-                            <td>Por definir</td>
-                            <td>Por definir</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Sesión 5</strong></td>
-                            <td>Por definir</td>
-                            <td>Por definir</td>
-                            <td>Por definir</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Sesión 6</strong></td>
-                            <td>Por definir</td>
-                            <td>Por definir</td>
-                            <td>Por definir</td>
+                            <td><strong>Próximas sesiones</strong></td>
+                            <td>Por anunciar</td>
+                            <td>Por anunciar</td>
+                            <td>Por anunciar</td>
                         </tr>
                     </tbody>
                 </table>
 
                 <div class="info-box" style="margin-top: 2rem;">
                     <p>
-                        <strong>📌 Nota importante:</strong> Los horarios y salones se actualizarán próximamente. Por favor, revisa esta página regularmente o contacta con nosotros para recibir notificaciones.
+                        <strong>📌 Importante:</strong> Los horarios y salones se actualizarán próximamente. 
+                        Revisa esta página regularmente o contáctanos para recibir notificaciones.
                     </p>
                 </div>
             </section>
 
+            <!-- Contacto -->
             <section class="section" id="contacto">
                 <h2 class="section-title">Contacto</h2>
                 
                 <div class="contact-card">
-                    <h3 class="card-title" style="color: var(--text-dark); margin-bottom: 1rem;">¿Tienes preguntas?</h3>
-                    <p class="card-description" style="max-width: 600px; margin: 0 auto 2rem;">
-                        Para consultas, dudas o información adicional sobre los workshops, puedes contactarnos a través de:
+                    <h3 class="card-title" style="color: var(--text-dark); margin-bottom: 1.5rem; font-size: 2rem;">
+                        ¿Tienes preguntas?
+                    </h3>
+                    <p class="card-description" style="max-width: 600px; margin: 0 auto 2rem; font-size: 1.1rem;">
+                        Para consultas, dudas o información adicional sobre los workshops, contáctanos:
                     </p>
                     
                     <a href="mailto:cienfi@icesi.edu.co" class="contact-email">
@@ -740,19 +894,22 @@
                     </a>
 
                     <p class="card-description" style="max-width: 700px; margin: 2rem auto 0;">
-                        Estaremos encantados de responder tus preguntas y apoyarte en tu proceso de aprendizaje. No dudes en escribirnos para obtener más información sobre los workshops, requisitos previos o cualquier aspecto relacionado con las sesiones.
+                        Estaremos encantados de apoyarte en tu proceso de aprendizaje.
                     </p>
                 </div>
             </section>
         </main>
 
         <footer>
-            <p style="font-weight: 600; margin-bottom: 0.5rem;">© 2024 Centro de Investigación en Economía y Finanzas - Universidad Icesi</p>
+            <p style="font-weight: 600; margin-bottom: 0.5rem;">
+                © 2024 Centro de Investigación en Economía y Finanzas - Universidad Icesi
+            </p>
             <p>Workshops de R</p>
         </footer>
     </div>
 
     <script>
+        // Smooth scrolling
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -766,6 +923,7 @@
             });
         });
 
+        // Intersection observer for animations
         const observerOptions = {
             threshold: 0.1,
             rootMargin: '0px 0px -50px 0px'
@@ -780,7 +938,7 @@
             });
         }, observerOptions);
 
-        document.querySelectorAll('.section, .card, .video-card').forEach(el => {
+        document.querySelectorAll('.section, .card, .team-member, .session-card').forEach(el => {
             observer.observe(el);
         });
     </script>
