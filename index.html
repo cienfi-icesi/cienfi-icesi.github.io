@@ -742,11 +742,12 @@
                     <p class="card-description" style="max-width: 600px; margin: 0 auto 2rem; font-size: 1.1rem;">
                         Para consultas sobre nuestros workshops, contáctanos:
                     </p>
-                    
-                    <a href="mailto:cienfi@icesi.edu.co" class="contact-email">
-                        <span style="font-size: 1.5rem;">✉</span>
-                        <span>cienfi@icesi.edu.co</span>
-                    </a>
+                 <span class="copy-email" 
+                            onclick="copyEmail('cienfi@icesi.edu.co'); return false;" 
+                            title="Clic para copiar">
+                            <strong>cienfi@icesi.edu.co</strong>
+                            <span class="copy-icon">📋</span>
+                        </span>
 
                     <p class="card-description" style="max-width: 700px; margin: 2rem auto 0;">
                         Estaremos encantados de apoyarte en tu proceso de aprendizaje.
@@ -757,13 +758,16 @@
 
         <footer>
             <p style="font-weight: 600; margin-bottom: 0.5rem;">
-                © 2024 Centro de Investigación en Economía y Finanzas - Universidad Icesi
+                © 2026 Centro de Investigación en Economía y Finanzas - Universidad Icesi
             </p>
             <p>CIENFI Workshops</p>
         </footer>
     </div>
 
     <script>
+
+
+
         // Smooth scrolling
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
@@ -823,4 +827,37 @@
         document.querySelectorAll('.section, .card, .team-member, .workshop-card').forEach(el => {
             observer.observe(el);
         });
+                // Copy email to clipboard
+        function copyEmail(email) {
+            navigator.clipboard.writeText(email).then(function() {
+                showToast();
+            }).catch(function(err) {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = email;
+                textArea.style.position = 'fixed';
+                textArea.style.left = '-999999px';
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    showToast();
+                } catch (err) {
+                    alert('Email: ' + email);
+                }
+                document.body.removeChild(textArea);
+            });
+        }
+
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.add('show');
+            setTimeout(function() {
+                toast.style.animation = 'slideOut 0.3s ease-out';
+                setTimeout(function() {
+                    toast.classList.remove('show');
+                    toast.style.animation = '';
+                }, 300);
+            }, 2000);
+        }
     </script>
