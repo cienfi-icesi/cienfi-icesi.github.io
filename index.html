@@ -398,17 +398,6 @@
             margin-bottom: 1.5rem;
         }
 
-        .workshop-status {
-            display: inline-block;
-            padding: 0.5rem 1rem;
-            background: rgba(91, 104, 223, 0.1);
-            color: var(--primary-blue);
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-        }
-
         .btn {
             display: inline-block;
             padding: 0.9rem 2rem;
@@ -430,14 +419,13 @@
         }
 
         /* Team Section */
-       .team-grid {
+        .team-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 2rem;
             margin-top: 2.5rem;
             justify-items: center;
         }
-
 
         .team-member {
             background: var(--bg-white);
@@ -451,31 +439,26 @@
             max-width: 380px;
         }
 
-    .team-member:hover {
-        transform: translateY(-8px);
-        box-shadow: var(--shadow-lg);
-        border-color: var(--primary-blue);
-    }
+        .team-member:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-blue);
+        }
 
-    .team-avatar {
-        width: 120px;
-        height: 120px;
-            .team-avatar img {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-            }
-    }
-        .team-avatar-fallback {
+        .team-avatar {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 1.5rem;
+            border-radius: 50%;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            position: relative;
+        }
+
+        .team-avatar img {
             width: 100%;
             height: 100%;
-            background: var(--gradient-purple);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: white;
+            object-fit: cover;
         }
 
         .team-name {
@@ -521,55 +504,6 @@
             color: white;
             transform: scale(1.05);
             box-shadow: var(--shadow-md);
-        }
-
-        /* Copy email styles */
-        .copy-email {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--primary-blue);
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            padding: 0.25rem 0.5rem;
-            border-radius: 6px;
-            position: relative;
-        }
-
-        .copy-email:hover {
-            background: var(--light-blue);
-        }
-
-        .copy-icon {
-            font-size: 0.9rem;
-            opacity: 0.7;
-        }
-
-        .copy-email:hover .copy-icon {
-            opacity: 1;
-        }
-
-        /* Toast notification for copy confirmation */
-        .toast {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            background: var(--primary-blue);
-            color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 12px;
-            box-shadow: var(--shadow-lg);
-            display: none;
-            align-items: center;
-            gap: 0.75rem;
-            font-weight: 600;
-            z-index: 10000;
-            animation: slideIn 0.3s ease-out;
-        }
-
-        .toast.show {
-            display: flex;
         }
 
         footer {
@@ -643,7 +577,6 @@
                     <a href="index.html" class="nav-link">Inicio</a>
                 </div>
                 
-                <!-- Dropdown Menu for Workshops -->
                 <div class="nav-item dropdown">
                     <a href="#" class="nav-link">
                         Talleres <span class="dropdown-arrow">▼</span>
@@ -663,7 +596,6 @@
         </nav>
 
         <main>
-            <!-- About CIENFI -->
             <section class="section" id="about">
                 <h2 class="section-title">Sobre CIENFI</h2>
                 <div class="hero-card">
@@ -681,7 +613,6 @@
                 </div>
             </section>
 
-            <!-- Workshops Overview -->
             <section class="section" id="workshops">
                 <h2 class="section-title">Nuestros Workshops</h2>
                 <p class="card-description" style="margin-bottom: 2rem;">
@@ -690,7 +621,6 @@
                 </p>
 
                 <div class="workshops-grid">
-                    <!-- Workshop de R -->
                     <div class="workshop-card">
                         <div class="workshop-header">
                             <div class="workshop-icon">📊</div>
@@ -708,7 +638,6 @@
                 </div>
             </section>
 
-            <!-- Team CIENFI -->
             <section class="section" id="equipo">
                 <h2 class="section-title">Nuestro Equipo</h2>
                 
@@ -721,7 +650,6 @@
                 </div>
 
                 <div class="team-grid">
-                    <!-- Miembro 1 -->
                     <div class="team-member">
                         <div class="team-avatar">
                             <img src="images/eduard-cienfi.png" alt="Eduard F. Martínez González">
@@ -730,7 +658,6 @@
                         <div class="team-role">PhD en Economía. Profesor del Departamento de Economía y Director del CIENFI</div>
                     </div>
 
-                    <!-- Miembro 2 -->
                     <div class="team-member">
                         <div class="team-avatar">
                             <img src="images/laura-cienfi.jpeg" alt="Laura Siniesterra">
@@ -739,7 +666,6 @@
                         <div class="team-role">Estudiante de la Maestría en Economía y Asistente de Investigación</div>
                     </div>
 
-                    <!-- Miembro 3 -->
                     <div class="team-member">
                         <div class="team-avatar">
                             <img src="images/miguel-cienfi.jpeg" alt="Miguel Ángel Torres">
@@ -748,7 +674,6 @@
                         <div class="team-role">Asistente de Investigación</div>
                     </div>
 
-                    <!-- Miembro 4 -->
                     <div class="team-member">
                         <div class="team-avatar">
                             <img src="images/fabian-cienfi.jpeg" alt="Fabián Andrés Vergel Ojeda">
@@ -757,7 +682,6 @@
                         <div class="team-role">Estudiante de la Maestría en Economía y Asistente de Investigación</div>
                     </div>
 
-                    <!-- Miembro 5 -->
                     <div class="team-member">
                         <div class="team-avatar">
                             <img src="images/angela-cienfi.jpg" alt="Ángela Gabriela Guerrero Rodríguez">
@@ -766,7 +690,6 @@
                         <div class="team-role">Estudiante de la Maestría en Economía y Asistente de Investigación</div>
                     </div>
 
-                    <!-- Miembro 6 -->
                     <div class="team-member">
                         <div class="team-avatar">
                             <img src="images/andrea-cienfi.png" alt="Andrea del Pilar Guerrero Delgado">
@@ -775,7 +698,6 @@
                         <div class="team-role">Estudiante de la Maestría en Economía y Asistente de Investigación</div>
                     </div>
 
-                    <!-- Miembro 7 -->
                     <div class="team-member">
                         <div class="team-avatar">
                             <img src="images/mapu-cienfi.jpeg" alt="María Paula Ceballos">
@@ -786,7 +708,6 @@
                 </div>
             </section>
 
-            <!-- Contact -->
             <section class="section" id="contacto">
                 <h2 class="section-title">Contacto</h2>
                 
@@ -799,12 +720,8 @@
                     </p>
                     
                     <a href="mailto:cienfi@icesi.edu.co" class="contact-email">
-                       <span class="copy-email" 
-                            onclick="copyEmail('cienfi@icesi.edu.co'); return false;" 
-                            title="Clic para copiar">
-                            <strong>cienfi@icesi.edu.co</strong>
-                            <span class="copy-icon">📋</span>
-                        </span>
+                        <span style="font-size: 1.5rem;">✉</span>
+                        <span>cienfi@icesi.edu.co</span>
                     </a>
 
                     <p class="card-description" style="max-width: 700px; margin: 2rem auto 0;">
@@ -816,44 +733,13 @@
 
         <footer>
             <p style="font-weight: 600; margin-bottom: 0.5rem;">
-                © 2026 Centro de Investigación en Economía y Finanzas - Universidad Icesi   </footer>
+                © 2024 Centro de Investigación en Economía y Finanzas - Universidad Icesi
+            </p>
+            <p>CIENFI Workshops</p>
+        </footer>
     </div>
 
     <script>
-
-        // Copy email to clipboard
-        function copyEmail(email) {
-            navigator.clipboard.writeText(email).then(function() {
-                showToast();
-            }).catch(function(err) {
-                // Fallback for older browsers
-                const textArea = document.createElement('textarea');
-                textArea.value = email;
-                textArea.style.position = 'fixed';
-                textArea.style.left = '-999999px';
-                document.body.appendChild(textArea);
-                textArea.select();
-                try {
-                    document.execCommand('copy');
-                    showToast();
-                } catch (err) {
-                    alert('Email: ' + email);
-                }
-                document.body.removeChild(textArea);
-            });
-        }
-
-        function showToast() {
-            const toast = document.getElementById('toast');
-            toast.classList.add('show');
-            setTimeout(function() {
-                toast.style.animation = 'slideOut 0.3s ease-out';
-                setTimeout(function() {
-                    toast.classList.remove('show');
-                    toast.style.animation = '';
-                }, 300);
-            }, 2000);
-        }
         // Smooth scrolling
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
@@ -890,7 +776,7 @@
         document.addEventListener('click', function(e) {
             if (!e.target.closest('.dropdown')) {
                 document.querySelectorAll('.dropdown').forEach(d => {
-                    d.classRemove('active');
+                    d.classList.remove('active');
                 });
             }
         });
@@ -915,4 +801,4 @@
         });
     </script>
 </body>
-</html
+</html>
