@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CIENFI Workshops | Universidad Icesi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #5B68DF;
+            --deep-blue: #2E3192;
+            --accent-blue: #3D4BC7;
+            --light-blue: #E8EBFF;
+            --purple-accent: #7C3AED;
+            --bg-white: #FFFFFF;
+            --bg-gray: #F8F9FB;
+            --text-dark: #1A202C;
+            --text-gray: #4A5568;
+            --text-muted: #718096;
+            --border-light: #E2E8F0;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-lg: 0 10px 30px rgba(0,0,0,0.12);
+            --gradient-purple: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg-white);
+            color: var(--text-dark);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        .bg-accent {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 600px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.04) 0%, rgba(118, 75, 162, 0.04) 100%);
+            z-index: 0;
+            pointer-events: none;
+        }
+        
+        .bg-accent::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(91, 104, 223, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 20s ease-in-out infinite;
+        }
+        
+        .bg-accent::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(124, 58, 237, 0.06) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 15s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(50px, -50px) scale(1.1); }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        header {
+            padding: 2rem 0 3rem;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            padding: 3rem 2.5rem;
+            background: var(--bg-white);
+            border-radius: 24px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-light);
+            text-align: center;
+        }
+
+        .header-text h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: var(--gradient-purple);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.02em;
+        }
+
+        .header-text p {
+            font-size: 1.1rem;
+            color: var(--text-gray);
+            font-weight: 500;
+        }
+
+        /* Navigation with Dropdown */
+        nav {
+            margin: 2.5rem 0;
+            animation: fadeIn 1s ease-out 0.3s backwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            background: var(--bg-white);
+            padding: 1rem;
+            border-radius: 16px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+            justify-content: center;
+        }
+
+        .nav-item {
+            position: relative;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 0.85rem 1.75rem;
+            background: var(--bg-gray);
+            color: var(--text-gray);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+            cursor: pointer;
+        }
+
+        .nav-link:hover {
+            background: var(--light-blue);
+            color: var(--primary-blue);
+            border-color: var(--primary-blue);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Dropdown Menu */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            margin-top: 0.5rem;
+            background: var(--bg-white);
+            min-width: 220px;
+            box-shadow: var(--shadow-lg);
+            border-radius: 12px;
+            border: 1px solid var(--border-light);
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .dropdown.active .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-item {
+            display: block;
+            padding: 0.9rem 1.5rem;
+            color: var(--text-gray);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-item:hover {
+            background: var(--light-blue);
+            color: var(--primary-blue);
+        }
+
+        .dropdown-arrow {
+            display: inline-block;
+            margin-left: 0.5rem;
+            font-size: 0.7rem;
+            transition: transform 0.3s ease;
+        }
+
+        .dropdown:hover .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        .section {
+            margin-bottom: 5rem;
+            animation: fadeInUp 0.8s ease-out backwards;
+        }
+
+        .section:nth-child(2) { animation-delay: 0.2s; }
+        .section:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: var(--text-dark);
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: var(--gradient-purple);
+            border-radius: 2px;
+        }
+
+        .card {
+            background: var(--bg-white);
+            border: 1px solid var(--border-light);
+            padding: 2.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-4px);
+            border-color: var(--primary-blue);
+        }
+
+        .card-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 1.25rem;
+            color: var(--primary-blue);
+        }
+
+        .card-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-gray);
+            margin-bottom: 1rem;
+        }
+
+        .hero-card {
+            background: var(--gradient-purple);
+            color: white;
+            padding: 3.5rem;
+            border-radius: 24px;
+            margin-bottom: 3rem;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .hero-card .card-title {
+            color: white;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .hero-card .card-description {
+            color: rgba(255, 255, 255, 0.95);
+            font-size: 1.15rem;
+            line-height: 1.9;
+            position: relative;
+        }
+
+        /* Workshops Grid */
+        .workshops-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .workshop-card {
+            background: var(--bg-white);
+            border: 2px solid var(--border-light);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+        }
+
+        .workshop-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(91, 104, 223, 0.2);
+            border-color: var(--primary-blue);
+        }
+
+        .workshop-header {
+            background: var(--gradient-purple);
+            padding: 2rem;
+            color: white;
+            position: relative;
+        }
+
+        .workshop-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .workshop-header h3 {
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .workshop-header p {
+            opacity: 0.95;
+            font-size: 1rem;
+        }
+
+        .workshop-content {
+            padding: 2rem;
+        }
+
+        .workshop-description {
+            color: var(--text-gray);
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .workshop-status {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: rgba(91, 104, 223, 0.1);
+            color: var(--primary-blue);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.9rem 2rem;
+            background: var(--primary-blue);
+            color: white;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: var(--deep-blue);
+            transform: scale(1.05);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Team Section */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2.5rem;
+        }
+
+        .team-member {
+            background: var(--bg-white);
+            border: 1px solid var(--border-light);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .team-member:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-blue);
+        }
+
+        .team-avatar {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 1.5rem;
+            border-radius: 50%;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            position: relative;
+        }
+
+        .team-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .team-avatar-fallback {
+            width: 100%;
+            height: 100%;
+            background: var(--gradient-purple);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .team-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .team-role {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 400;
+            line-height: 1.6;
+        }
+
+        .contact-card {
+            background: linear-gradient(135deg, rgba(91, 104, 223, 0.08) 0%, rgba(124, 58, 237, 0.08) 100%);
+            border: 2px solid var(--light-blue);
+            padding: 3rem;
+            border-radius: 20px;
+            text-align: center;
+        }
+
+        .contact-email {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1.2rem 2.5rem;
+            background: var(--bg-white);
+            border: 2px solid var(--primary-blue);
+            border-radius: 12px;
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            margin: 1.5rem 0;
+        }
+
+        .contact-email:hover {
+            background: var(--primary-blue);
+            color: white;
+            transform: scale(1.05);
+            box-shadow: var(--shadow-md);
+        }
+
+        footer {
+            margin-top: 6rem;
+            padding: 3rem 0;
+            border-top: 1px solid var(--border-light);
+            text-align: center;
+            color: var(--text-muted);
+            background: var(--bg-gray);
+        }
+
+        footer p {
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                padding: 2.5rem 1.5rem;
+            }
+
+            .header-text h1 {
+                font-size: 2.5rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .nav-links {
+                flex-direction: column;
+            }
+
+            .dropdown-content {
+                position: static;
+                margin-top: 0.5rem;
+                display: none;
+            }
+
+            .dropdown.active .dropdown-content {
+                display: block;
+            }
+
+            .workshops-grid,
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-card {
+                padding: 2.5rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-accent"></div>
+    
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div class="header-text">
+                    <h1>CIENFI Workshops</h1>
+                    <p>Centro de Investigación en Economía y Finanzas · Universidad Icesi</p>
+                </div>
+            </div>
+        </header>
+
+        <nav>
+            <div class="nav-links">
+                <div class="nav-item">
+                    <a href="index.html" class="nav-link">Inicio</a>
+                </div>
+                
+                <!-- Dropdown Menu for Workshops -->
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link">
+                        Talleres <span class="dropdown-arrow">▼</span>
+                    </a>
+                    <div class="dropdown-content">
+                        <a href="workshop-r.html" class="dropdown-item">📊 Workshop de R</a>
+                    </div>
+                </div>
+
+                <div class="nav-item">
+                    <a href="#equipo" class="nav-link">Equipo</a>
+                </div>
+                <div class="nav-item">
+                    <a href="#contacto" class="nav-link">Contacto</a>
+                </div>
+            </div>
+        </nav>
+
+        <main>
+            <!-- About CIENFI -->
+            <section class="section" id="about">
+                <h2 class="section-title">Sobre CIENFI</h2>
+                <div class="hero-card">
+                    <h3 class="card-title">Centro de Investigación en Economía y Finanzas</h3>
+                    <p class="card-description">
+                        CIENFI es un centro de investigación de la Universidad Icesi dedicado a generar conocimiento 
+                        de alta calidad en economía y finanzas, con especial énfasis en el análisis cuantitativo y 
+                        la aplicación de métodos computacionales modernos.
+                    </p>
+                    <p class="card-description">
+                        A través de nuestra serie de workshops, buscamos fortalecer las habilidades técnicas y analíticas 
+                        de estudiantes e investigadores, proporcionando formación práctica en herramientas esenciales 
+                        para la investigación moderna.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Workshops Overview -->
+            <section class="section" id="workshops">
+                <h2 class="section-title">Nuestros Workshops</h2>
+                <p class="card-description" style="margin-bottom: 2rem;">
+                    Explora nuestra serie de talleres diseñados para desarrollar habilidades prácticas en análisis 
+                    de datos y métodos cuantitativos.
+                </p>
+
+                <div class="workshops-grid">
+                    <!-- Workshop de R -->
+                    <div class="workshop-card">
+                        <div class="workshop-header">
+                            <div class="workshop-icon">📊</div>
+                            <h3>Workshop de R</h3>
+                            <p>Análisis de datos y programación estadística</p>
+                        </div>
+                        <div class="workshop-content">
+                            <p class="workshop-description">
+                                Introducción práctica al lenguaje de programación R. Aprende a analizar datos, 
+                                crear visualizaciones y automatizar procesos de análisis estadístico.
+                            </p>
+                            <a href="workshop-r.html" class="btn">Ver Workshop →</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Team CIENFI -->
+            <section class="section" id="equipo">
+                <h2 class="section-title">Nuestro Equipo</h2>
+                
+                <div class="card" style="margin-bottom: 2.5rem;">
+                    <h3 class="card-title">Investigadores y Asistentes</h3>
+                    <p class="card-description">
+                        Nuestro equipo está comprometido con la excelencia académica y la formación de habilidades 
+                        analíticas aplicadas al mundo real.
+                    </p>
+                </div>
+
+                <div class="team-grid">
+                    <!-- Miembro 1 -->
+                    <div class="team-member">
+                        <div class="team-avatar">
+                            <img src="images/eduard-cienfi.png" alt="Eduard F. Martínez González">
+                        </div>
+                        <div class="team-name">Eduard F. Martínez González</div>
+                        <div class="team-role">PhD en Economía. Profesor del Departamento de Economía y Director del CIENFI</div>
+                    </div>
+
+                    <!-- Miembro 2 -->
+                    <div class="team-member">
+                        <div class="team-avatar">
+                            <img src="images/laura-cienfi.jpeg" alt="Laura Siniesterra">
+                        </div>
+                        <div class="team-name">Laura Siniesterra Arteaga</div>
+                        <div class="team-role">Estudiante de la Maestría en Economía y Asistente de Investigación</div>
+                    </div>
+
+                    <!-- Miembro 3 -->
+                    <div class="team-member">
+                        <div class="team-avatar">
+                            <img src="images/miguel-cienfi.jpeg" alt="Miguel Ángel Torres">
+                        </div>
+                        <div class="team-name">Miguel Ángel Torres</div>
+                        <div class="team-role">Asistente de Investigación</div>
+                    </div>
+
+                    <!-- Miembro 4 -->
+                    <div class="team-member">
+                        <div class="team-avatar">
+                            <img src="images/fabian-cienfi.jpeg" alt="Fabián Andrés Vergel Ojeda">
+                        </div>
+                        <div class="team-name">Fabián Andrés Vergel Ojeda</div>
+                        <div class="team-role">Estudiante de la Maestría en Economía y Asistente de Investigación</div>
+                    </div>
+
+                    <!-- Miembro 5 -->
+                    <div class="team-member">
+                        <div class="team-avatar">
+                            <img src="images/angela-cienfi.jpg" alt="Ángela Gabriela Guerrero Rodríguez">
+                        </div>
+                        <div class="team-name">Ángela Gabriela Guerrero Rodríguez</div>
+                        <div class="team-role">Estudiante de la Maestría en Economía y Asistente de Investigación</div>
+                    </div>
+
+                    <!-- Miembro 6 -->
+                    <div class="team-member">
+                        <div class="team-avatar">
+                            <img src="images/andrea-cienfi.png" alt="Andrea del Pilar Guerrero Delgado">
+                        </div>
+                        <div class="team-name">Andrea del Pilar Guerrero Delgado</div>
+                        <div class="team-role">Estudiante de la Maestría en Economía y Asistente de Investigación</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Contact -->
+            <section class="section" id="contacto">
+                <h2 class="section-title">Contacto</h2>
+                
+                <div class="contact-card">
+                    <h3 class="card-title" style="color: var(--text-dark); margin-bottom: 1.5rem; font-size: 2rem;">
+                        ¿Tienes preguntas?
+                    </h3>
+                    <p class="card-description" style="max-width: 600px; margin: 0 auto 2rem; font-size: 1.1rem;">
+                        Para consultas sobre nuestros workshops, contáctanos:
+                    </p>
+                    
+                    <a href="mailto:cienfi@icesi.edu.co" class="contact-email">
+                        <span style="font-size: 1.5rem;">✉</span>
+                        <span>cienfi@icesi.edu.co</span>
+                    </a>
+
+                    <p class="card-description" style="max-width: 700px; margin: 2rem auto 0;">
+                        Estaremos encantados de apoyarte en tu proceso de aprendizaje.
+                    </p>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p style="font-weight: 600; margin-bottom: 0.5rem;">
+                © 2024 Centro de Investigación en Economía y Finanzas - Universidad Icesi
+            </p>
+            <p>CIENFI Workshops</p>
+        </footer>
+    </div>
+
+    <script>
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Dropdown toggle
+        document.querySelectorAll('.dropdown > .nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const dropdown = this.parentElement;
+                
+                // Close other dropdowns
+                document.querySelectorAll('.dropdown').forEach(d => {
+                    if (d !== dropdown) {
+                        d.classList.remove('active');
+                    }
+                });
+                
+                // Toggle current dropdown
+                dropdown.classList.toggle('active');
+            });
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.dropdown')) {
+                document.querySelectorAll('.dropdown').forEach(d => {
+                    d.classList.remove('active');
+                });
+            }
+        });
+
+        // Intersection observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.section, .card, .team-member, .workshop-card').forEach(el => {
+            observer.observe(el);
+        });
+    </script>

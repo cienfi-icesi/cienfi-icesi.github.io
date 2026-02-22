@@ -1,0 +1,28 @@
+project:
+  type: default
+
+format:
+  html:
+    webr:
+      show-code: false
+    theme: 
+      light: lux
+    number-sections: true
+    toc: true
+    toc-location: left
+    toc-expand: 0
+    smooth-scroll: true
+    link-external-newwindow: true
+    code-tools: false
+    css: styles.css
+
+filters:
+  - webr
+
+webr:
+  packages: [dplyr]
+  
+  
+
+
+

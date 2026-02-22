@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workshop de R | CIENFI - Universidad Icesi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #5B68DF;
+            --deep-blue: #2E3192;
+            --accent-blue: #3D4BC7;
+            --light-blue: #E8EBFF;
+            --purple-accent: #7C3AED;
+            --bg-white: #FFFFFF;
+            --bg-gray: #F8F9FB;
+            --text-dark: #1A202C;
+            --text-gray: #4A5568;
+            --text-muted: #718096;
+            --border-light: #E2E8F0;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-lg: 0 10px 30px rgba(0,0,0,0.12);
+            --gradient-purple: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg-white);
+            color: var(--text-dark);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        .bg-accent {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 600px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.04) 0%, rgba(118, 75, 162, 0.04) 100%);
+            z-index: 0;
+            pointer-events: none;
+        }
+        
+        .bg-accent::before, .bg-accent::after {
+            content: '';
+            position: absolute;
+            width: 800px;
+            height: 800px;
+            border-radius: 50%;
+            animation: float 20s ease-in-out infinite;
+        }
+        
+        .bg-accent::before {
+            top: -50%;
+            right: -20%;
+            background: radial-gradient(circle, rgba(91, 104, 223, 0.08) 0%, transparent 70%);
+        }
+        
+        .bg-accent::after {
+            bottom: -30%;
+            left: -10%;
+            background: radial-gradient(circle, rgba(124, 58, 237, 0.06) 0%, transparent 70%);
+            animation-direction: reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(50px, -50px) scale(1.1); }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        header {
+            padding: 2rem 0 3rem;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            padding: 3rem 2.5rem;
+            background: var(--bg-white);
+            border-radius: 24px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-light);
+            text-align: center;
+        }
+
+        .header-text h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: var(--gradient-purple);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.02em;
+        }
+
+        .header-text p {
+            font-size: 1.1rem;
+            color: var(--text-gray);
+            font-weight: 500;
+        }
+
+        nav {
+            margin: 2.5rem 0;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            background: var(--bg-white);
+            padding: 1rem;
+            border-radius: 16px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+            justify-content: center;
+        }
+
+        .nav-item {
+            position: relative;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 0.85rem 1.75rem;
+            background: var(--bg-gray);
+            color: var(--text-gray);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .nav-link:hover {
+            background: var(--light-blue);
+            color: var(--primary-blue);
+            border-color: var(--primary-blue);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            margin-top: 0.5rem;
+            background: var(--bg-white);
+            min-width: 220px;
+            box-shadow: var(--shadow-lg);
+            border-radius: 12px;
+            border: 1px solid var(--border-light);
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-item {
+            display: block;
+            padding: 0.9rem 1.5rem;
+            color: var(--text-gray);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-item:hover {
+            background: var(--light-blue);
+            color: var(--primary-blue);
+        }
+
+        .dropdown-arrow {
+            display: inline-block;
+            margin-left: 0.5rem;
+            font-size: 0.7rem;
+            transition: transform 0.3s ease;
+        }
+
+        .dropdown:hover .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        .section {
+            margin-bottom: 5rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: var(--text-dark);
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: var(--gradient-purple);
+            border-radius: 2px;
+        }
+
+        .hero-card {
+            background: var(--gradient-purple);
+            color: white;
+            padding: 3.5rem;
+            border-radius: 24px;
+            margin-bottom: 3rem;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .hero-card .card-title {
+            color: white;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .hero-card .card-description {
+            color: rgba(255, 255, 255, 0.95);
+            font-size: 1.15rem;
+            line-height: 1.9;
+            position: relative;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin: 0.25rem;
+        }
+
+        /* Sessions - Single column layout */
+        .sessions-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+            max-width: 900px;
+        }
+
+        .session-card {
+            background: var(--bg-white);
+            border: 2px solid var(--border-light);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+        }
+
+        .session-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(91, 104, 223, 0.2);
+            border-color: var(--primary-blue);
+        }
+
+        .session-header {
+            background: var(--gradient-purple);
+            padding: 2rem;
+            color: white;
+            position: relative;
+        }
+
+        .session-number {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .session-header h3 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .session-header p {
+            font-size: 1rem;
+            opacity: 0.95;
+        }
+
+        .session-content {
+            padding: 2rem;
+        }
+
+        .session-topics {
+            margin: 1.25rem 0 1.75rem;
+        }
+
+        .topic-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 0.6rem 0;
+            color: var(--text-gray);
+            font-size: 0.98rem;
+            line-height: 1.5;
+        }
+
+        .topic-item::before {
+            content: '✓';
+            display: inline-block;
+            min-width: 22px;
+            height: 22px;
+            background: var(--light-blue);
+            color: var(--primary-blue);
+            border-radius: 50%;
+            text-align: center;
+            line-height: 22px;
+            margin-right: 0.85rem;
+            font-weight: 700;
+            flex-shrink: 0;
+            font-size: 0.85rem;
+            margin-top: 2px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.9rem 2rem;
+            background: var(--primary-blue);
+            color: white;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: var(--deep-blue);
+            transform: scale(1.05);
+            box-shadow: var(--shadow-md);
+        }
+
+        .info-box {
+            background: var(--light-blue);
+            border-left: 4px solid var(--primary-blue);
+            padding: 1.75rem;
+            margin: 2rem 0;
+            border-radius: 12px;
+        }
+
+        .info-box strong {
+            color: var(--primary-blue);
+            font-weight: 700;
+        }
+
+        .info-box p {
+            color: var(--text-gray);
+            line-height: 1.8;
+        }
+
+        footer {
+            margin-top: 6rem;
+            padding: 3rem 0;
+            border-top: 1px solid var(--border-light);
+            text-align: center;
+            color: var(--text-muted);
+            background: var(--bg-gray);
+        }
+
+        footer p {
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                padding: 2.5rem 1.5rem;
+            }
+
+            .header-text h1 {
+                font-size: 2.5rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .nav-links {
+                flex-direction: column;
+            }
+
+            .dropdown-content {
+                position: static;
+                margin-top: 0.5rem;
+                display: none;
+            }
+
+            .dropdown.active .dropdown-content {
+                display: block;
+            }
+
+            .hero-card {
+                padding: 2.5rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-accent"></div>
+    
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div class="header-text">
+                    <h1>Workshop de R</h1>
+                    <p>Análisis de datos y programación estadística · CIENFI</p>
+                </div>
+            </div>
+        </header>
+
+        <nav>
+            <div class="nav-links">
+                <div class="nav-item">
+                    <a href="index.html" class="nav-link">Inicio</a>
+                </div>
+                
+                <!-- Dropdown Menu for Workshops -->
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link">
+                        Talleres <span class="dropdown-arrow">▼</span>
+                    </a>
+                    <div class="dropdown-content">
+                        <a href="workshop-r.html" class="dropdown-item">📊 Workshop de R</a>
+                    </div>
+                </div>
+
+                <div class="nav-item">
+                    <a href="#sesiones" class="nav-link">Sesiones</a>
+                </div>
+                <div class="nav-item">
+                    <a href="#horarios" class="nav-link">Horarios</a>
+                </div>
+            </div>
+        </nav>
+
+        <main>
+            <!-- Overview -->
+            <section class="section">
+                <h2 class="section-title">Sobre el Workshop</h2>
+                <div class="hero-card">
+                    <h3 class="card-title">Aprende R desde cero y potencia tus habilidades analíticas</h3>
+                    <p class="card-description">
+                        Introducción práctica al lenguaje de programación R. A lo largo de las sesiones, adquirirás 
+                        habilidades prácticas para analizar datos, crear visualizaciones claras, automatizar procesos 
+                        y comunicar resultados de forma efectiva.
+                    </p>
+                    <p class="card-description">
+                        Dirigido a estudiantes que desean iniciarse en la programación y fortalecer sus habilidades 
+                        analíticas aplicadas al trabajo con datos. No se requiere experiencia previa.
+                    </p>
+                    <div style="margin-top: 1.5rem;">
+                        <span class="badge">📊 Análisis de datos</span>
+                        <span class="badge">📈 Visualización</span>
+                        <span class="badge">🤖 Automatización</span>
+                        <span class="badge">📑 Reportes</span>
+                        <span class="badge">💻 Programación</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sessions -->
+            <section class="section" id="sesiones">
+                <h2 class="section-title">Contenido del Workshop</h2>
+                
+                <div class="sessions-grid">
+                    <!-- Sesión 1: Introducción a R -->
+                    <div class="session-card">
+                        <div class="session-header">
+                            <span class="session-number">Sesión 1</span>
+                            <h3>Introducción a R</h3>
+                            <p>Fundamentos esenciales del lenguaje</p>
+                        </div>
+                        
+                        <div class="session-content">
+                            <div class="session-topics">
+                                <div class="topic-item">Interfaz de RStudio</div>
+                                <div class="topic-item">R como calculadora</div>
+                                <div class="topic-item">Tipos de datos</div>
+                                <div class="topic-item">Objetos y asignación</div>
+                                <div class="topic-item">Clase, tipo y estructura</div>
+                                <div class="topic-item">Environment: Gestión del espacio de trabajo</div>
+                                <div class="topic-item">¿Qué puede pasar en la consola?</div>
+                                <div class="topic-item">Funciones y sistemas de ayuda</div>
+                                <div class="topic-item">Paquetes y librerías</div>
+                                <div class="topic-item">Vectores y Data frames</div>
+                            </div>
+                            
+                            <!-- 👇 TU ENLACE DE QUARTO ESTÁ AQUÍ -->
+                            <a href="https://cienfi-icesi.github.io/workshop-r/intro-r/intro-r.html" class="btn" target="_blank">
+                                Acceder al Material →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-box" style="margin-top: 3rem;">
+                    <p>
+                        <strong>📚 Próximamente:</strong> Nuevas sesiones sobre manipulación de datos con Tidyverse, 
+                        visualización con ggplot2, análisis estadístico y más. ¡Mantente atento!
+                    </p>
+                </div>
+            </section>
+
+            <!-- Schedule -->
+            <section class="section" id="horarios">
+                <h2 class="section-title">Horarios y Salones</h2>
+                
+                <div style="background: var(--bg-white); padding: 2.5rem; border-radius: 16px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-light);">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="border-bottom: 2px solid var(--border-light);">
+                                <th style="padding: 1rem; text-align: left; font-weight: 700; color: var(--text-dark);">Sesión</th>
+                                <th style="padding: 1rem; text-align: left; font-weight: 700; color: var(--text-dark);">Fecha</th>
+                                <th style="padding: 1rem; text-align: left; font-weight: 700; color: var(--text-dark);">Horario</th>
+                                <th style="padding: 1rem; text-align: left; font-weight: 700; color: var(--text-dark);">Salón</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="border-bottom: 1px solid var(--border-light);">
+                                <td style="padding: 1rem; color: var(--text-gray);"><strong>Introducción a R</strong></td>
+                                <td style="padding: 1rem; color: var(--text-gray);">Por definir</td>
+                                <td style="padding: 1rem; color: var(--text-gray);">Por definir</td>
+                                <td style="padding: 1rem; color: var(--text-gray);">Por definir</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 1rem; color: var(--text-gray);"><strong>Próximas sesiones</strong></td>
+                                <td style="padding: 1rem; color: var(--text-gray);">Por anunciar</td>
+                                <td style="padding: 1rem; color: var(--text-gray);">Por anunciar</td>
+                                <td style="padding: 1rem; color: var(--text-gray);">Por anunciar</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="info-box" style="margin-top: 2rem;">
+                    <p>
+                        <strong>📌 Importante:</strong> Los horarios y salones se actualizarán próximamente. 
+                        Revisa esta página regularmente o contáctanos en <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="8be8e2eee5ede2cbe2e8eef8e2a5eeeffea5e8e4">[email&#160;protected]</a></strong> para recibir notificaciones.
+                    </p>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p style="font-weight: 600; margin-bottom: 0.5rem;">
+                © 2024 Centro de Investigación en Economía y Finanzas - Universidad Icesi
+            </p>
+            <p>Workshop de R</p>
+        </footer>
+    </div>
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Mobile dropdown toggle
+        if (window.innerWidth <= 768) {
+            document.querySelectorAll('.dropdown > .nav-link').forEach(link => {
+              
