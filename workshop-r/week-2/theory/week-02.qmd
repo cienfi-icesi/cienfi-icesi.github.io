@@ -1,0 +1,1096 @@
+---
+title: "Transformación de Datos con dplyr"
+subtitle: "Workshop CIENFI"
+author: "PhD. Eduard F. Martínez-González"
+format:
+  html: default
+lang: es
+---
+
+<div id="contact-links" style="text-align:center; font-size:15px; color:#555; margin-top:-0.3em; margin-bottom:1em;">
+<a href="https://twitter.com/emartigo" style="color:#555; text-decoration:none; margin-right:16px;"><img src="pic/twitter.jpg" alt="Twitter" width="16" height="16" style="vertical-align:middle; margin-right:4px;"/>\@emartigo</a>
+<a href="https://www.linkedin.com/in/eduard-fernando-mart%C3%ADnez-gonz%C3%A1lez-b99937117/" style="color:#555; text-decoration:none; margin-right:16px;"><img src="pic/linkeding.png" alt="LinkedIn" width="16" height="16" style="vertical-align:middle; margin-right:4px;"/>Eduard F. Martínez G.</a>
+<a href="https://github.com/eduard-martinez" style="color:#555; text-decoration:none; margin-right:16px;"><img src="pic/github.png" alt="GitHub" width="16" height="16" style="vertical-align:middle; margin-right:4px;"/>eduard-martinez</a>
+<a href="https://eduard-martinez.github.io" style="color:#555; text-decoration:none;"><img src="pic/link.png" alt="Web" width="16" height="16" style="vertical-align:middle; margin-right:4px;"/>eduard-martinez.github.io</a>
+<span id="webr-status-anchor"></span>
+</div>
+
+<!--=================-->
+<!--=================-->
+# Objetivo de la semana
+
+Esta semana aprenderemos a **transformar datos crudos en información lista para tomar decisiones**. El foco NO está en "dominar dplyr", sino en responder preguntas de negocio mediante filtros, cálculos, agrupaciones y resúmenes.
+
+::: {.callout-key}
+**¿Por qué necesitamos transformar datos?**
+
+Los datos raramente vienen en el formato que necesitamos para responder preguntas. Casi siempre debemos:
+
+- **Filtrar:** "Solo quiero ver las ventas de 2023"
+- **Calcular:** "¿Cuál es el margen unitario de cada producto?"
+- **Agrupar:** "¿Cuánto vendió cada región?"
+- **Resumir:** "¿Cuál es el promedio de ventas por vendedor?"
+
+`dplyr` es una "gramática" que nos permite hacer estas transformaciones con verbos claros. Esta semana aprenderemos cada verbo por separado. Al final de la clase los combinaremos.
+:::
+
+## Lo que aprenderemos esta semana
+
+**1. Transformaciones básicas — un verbo a la vez**
+
+- Seleccionar columnas con `select()`
+- Filtrar filas con `filter()`
+- Crear variables calculadas con `mutate()`
+- Obtener resúmenes globales con `summarise()`
+
+**2. Descriptivas por grupo**
+
+- Agrupar datos con `group_by()`
+- Calcular KPIs por segmento con `group_by() + summarise()`
+
+::: {.callout-key}
+**Conexión con el flujo analítico**
+
+Ya entendemos qué es el proceso analítico (Semana 02) y cómo funciona R como entorno de trabajo (Semana 03). Ahora aprendemos a **preparar tablas** que respondan preguntas específicas antes de visualizarlas (Semana 05).
+
+Esta semana trabajamos con datos "ideales" (sin valores faltantes ni errores). La limpieza la veremos en la Semana 06.
+:::
+
+<!--=================-->
+<!--=================-->
+# Introducción a dplyr
+
+## ¿Qué es dplyr?
+
+`dplyr` es un paquete de R diseñado para manipular data frames de manera intuitiva. Es parte del [tidyverse]{.term}: un ecosistema de paquetes con una filosofía común de código claro y legible.
+
+**La idea central: verbos para acciones**
+
+En R base podemos filtrar filas así:
+
+```r
+ventas[ventas$region == "Norte", ]
+```
+
+Con `dplyr`, la misma operación se escribe así:
+
+```r
+filter(ventas, region == "Norte")
+```
+
+`dplyr` reemplaza la notación de corchetes por **verbos** que describen exactamente qué queremos hacer. Cada verbo hace una sola cosa, y tiene un nombre que lo dice claramente.
+
+## Instalación y carga
+
+La función `install.packages()` descarga el paquete en tu computador — solo se hace **una vez**, igual que instalas una aplicación. `library()` lo activa para la sesión actual — esto sí hay que hacerlo **cada vez** que abres RStudio, igual que abres la app cada vez que la necesitas.
+
+**Regla práctica:** `install.packages()` se corre una sola vez directo en la Consola. Nunca debe quedar activo en el script. Si quieres conservarla como referencia, déjala comentada: así evitas reinstalaciones innecesarias y, si compartes el script, otras personas no reinstalarán paquetes que ya tienen.
+
+```{webr-r}
+## Instalar dplyr (solo una vez, fuera del script)
+# install.packages("dplyr")
+
+## Cargar al inicio de cada sesión
+library(dplyr)
+```
+
+## Dataset de ejemplo: ventas de una tienda
+
+Usaremos este data frame durante toda la clase. Tiene **9 transacciones** y **6 columnas**: trimestre, producto, categoría, precio unitario, cantidad vendida y región del vendedor.
+
+En el entorno de **WebR** (este documento), el dataset ya viene precargado: no necesitas leerlo desde ningún archivo. Basta con ejecutar el segundo chunk para inspeccionarlo.
+
+Si trabajas desde **RStudio**, descomenta la línea `read.csv(...)` para cargar el dataset directamente desde internet.
+
+```{webr-r}
+#| context: setup
+
+ventas <- data.frame(
+  trimestre = c("Q1","Q1","Q1","Q2","Q2","Q2","Q3","Q3","Q3"),
+  producto  = c("Laptop","Mouse","Licencia","Laptop","Soporte","Mouse","Licencia","Laptop","Soporte"),
+  categoria = c("Hardware","Hardware","Software","Hardware","Software","Hardware","Software","Hardware","Software"),
+  precio    = c(1200, 25, 150, 1200, 80, 25, 150, 1200, 80),
+  cantidad  = c(2, 10, 5, 3, 8, 15, 6, 1, 4),
+  region    = c("Norte","Sur","Norte","Centro","Sur","Norte","Centro","Sur","Norte")
+)
+```
+
+```{webr-r}
+## Descomenta esta línea si trabajas desde RStudio
+# ventas <- read.csv("https://eduard-martinez.github.io/databases/ba/ventas.csv")
+
+## Inspeccionar la base de datos
+ventas
+```
+
+<!--=================-->
+<!--=================-->
+# Transformaciones básicas
+
+La lógica de trabajo es siempre la misma:
+
+```
+resultado <- verbo(datos, argumentos)
+```
+
+Aplicamos un verbo al dataset y guardamos el resultado en un objeto nuevo. El dataset original **no se modifica**.
+
+---
+
+## select(): Seleccionar columnas
+
+La función `select()` devuelve solo las columnas que le pedimos.
+
+```{webr-r}
+## Seleccionar 3 columnas del dataset ventas
+ventas_red <- select(ventas, producto, precio, cantidad)
+ventas_red
+```
+
+::: {.callout-key}
+**¿Qué pasó aquí?**
+
+- `ventas` sigue intacto en el Environment (con 6 columnas)
+- `ventas_red` es un objeto nuevo con solo 3 columnas
+- `select()` no modifica el original, crea una copia reducida
+
+Puedes verificarlo ejecutando `ncol(ventas)` y `ncol(ventas_red)` por separado.
+:::
+
+También puedes excluir columnas con el operador `-`. Útil cuando es más fácil decir qué NO quieres:
+
+```{webr-r}
+## Todas las columnas EXCEPTO trimestre
+ventas_notrim <- select(ventas, -trimestre)
+ventas_notrim
+```
+
+Si en algún momento trabajas con datasets de muchas columnas, `select()` tiene funciones auxiliares como `starts_with()` y `ends_with()` que permiten seleccionar columnas por patrones en sus nombres.
+
+
+## rename(): Renombrar columnas
+
+La función `rename()` cambia el nombre de una o más columnas sin modificar su contenido. La sintaxis es `nuevo_nombre = nombre_viejo`:
+
+```{webr-r}
+## Renombrar la columna "producto" a "item"
+ventas_ren <- rename(ventas, item = producto)
+ventas_ren
+```
+
+::: {.callout-practice}
+**¿Cuándo renombrar?** Cuando los nombres originales no son descriptivos (`x1`, `var2`), contienen espacios o caracteres especiales, o quieres estandarizar nomenclatura antes de combinar datasets.
+
+**Buena práctica:** minúsculas y guion bajo — `precio_unitario`, no `Precio Unitario`.
+:::
+
+---
+
+## filter(): Filtrar filas
+
+La función `filter()` devuelve solo las filas que cumplen una condición. Las demás se descartan.
+
+### Filtros simples
+
+```{webr-r}
+## Filas donde region es exactamente "Norte"
+ventas_norte <- filter(ventas, region == "Norte")
+ventas_norte
+```
+
+```{webr-r}
+## Filas donde el precio supera 100
+ventas_alta <- filter(ventas, precio > 100)
+ventas_alta
+```
+
+### Operadores de comparación
+
+La condición dentro de `filter()` siempre usa un operador de comparación. Estos son los más comunes:
+
+| Operador | Significado | Ejemplo |
+|----------|-------------|---------|
+| `==` | Igual a | `region == "Norte"` |
+| `!=` | Diferente de | `region != "Sur"` |
+| `>` | Mayor que | `precio > 100` |
+| `<` | Menor que | `precio < 500` |
+| `>=` | Mayor o igual | `cantidad >= 5` |
+| `<=` | Menor o igual | `precio <= 300` |
+| `%in%` | Pertenece al conjunto | `region %in% c("Norte","Sur")` |
+
+::: {.callout-practice}
+**Error común: confundir `=` con `==`**
+
+```r
+filter(ventas, region = "Norte")   # Error — asigna en lugar de comparar
+filter(ventas, region == "Norte")  # Correcto — compara
+```
+
+Dentro de `filter()`, siempre dos signos igual para comparar.
+:::
+
+### Filtros con múltiples condiciones
+
+Cuando la pregunta exige que se cumplan **dos condiciones al mismo tiempo**, usamos `&`:
+
+```{webr-r}
+# Ventas de región Norte con precio mayor a 100
+norte <- filter(ventas, region=="Norte" & precio>100)
+norte
+```
+
+Cuando basta con que se cumpla **al menos una**, usamos `|`:
+
+```{webr-r}
+# Ventas de región Centro o región Sur
+centro <- filter(ventas, region=="Centro" | region=="Sur")
+centro
+```
+
+---
+
+### Mini-ejercicio
+
+Escribe el código para responder cada pregunta. Si obtienes el resultado esperado, vas bien.
+
+```{webr-r}
+# P1. ¿Cuáles ventas son de Hardware?
+#     Resultado esperado: 5 filas
+
+
+# P2. ¿Cuáles ventas tienen cantidad mayor o igual a 5?
+#     Resultado esperado: 6 filas
+
+
+# P3. ¿Cuáles ventas son de Software con cantidad mayor a 5?
+#     Resultado esperado: 2 filas
+
+
+# P4. ¿Cuáles ventas NO son de la región Norte?
+#     Resultado esperado: 5 filas
+
+
+```
+
+---
+
+## arrange(): Ordenar filas
+
+Filtrar y calcular nos da los datos correctos, pero no siempre en el orden más útil para leerlos o comunicarlos. `arrange()` reorganiza las filas de un data frame según los valores de una o más columnas. Es especialmente útil como paso final antes de mostrar una tabla: un ranking de productos por ingreso, los clientes con mayor deuda primero, o las transacciones más recientes arriba son todos casos donde el orden importa tanto como el contenido.
+
+```{webr-r}
+# Ordenar por precio de menor a mayor (ascendente por defecto)
+ventas_por_precio <- arrange(ventas, precio)
+ventas_por_precio
+```
+
+```{webr-r}
+# Ordenar de mayor a menor con desc()
+ventas_precio_desc <- arrange(ventas, desc(precio))
+ventas_precio_desc
+```
+
+```{webr-r}
+# Ordenar por región (ascendente) y dentro de cada región por precio (descendente)
+ventas_ordenado <- arrange(ventas, region, desc(precio))
+ventas_ordenado
+```
+
+**Cómo leer el último ejemplo:** "Ordena primero por región (A→Z). Dentro de cada región, ordena por precio de mayor a menor."
+
+---
+
+## mutate(): Crear nuevas variables
+
+La función `mutate()` añade columnas calculadas al dataset. Las columnas originales se conservan.
+
+### Cálculos simples
+```{webr-r}
+# Calcular ingreso por transacción
+ventas_ing <- mutate(ventas, ingreso = precio * cantidad)
+ventas_ing
+```
+```{webr-r}
+# Crear varias columnas a la vez
+ventas_cal <- mutate(ventas,
+                     ingreso = precio * cantidad,
+                     ing_miles = (precio * cantidad) /1000)
+ventas_cal
+```
+
+::: {.callout-key}
+**mutate() mantiene el número de filas**
+
+`mutate()` siempre devuelve un data frame con **el mismo número de filas** que el original. Solo añade (o reemplaza) columnas. Cada fila recibe su propio valor calculado.
+
+Más adelante veremos `summarise()`, que hace lo opuesto: **colapsa** todas las filas en un resumen.
+:::
+
+### Clasificar con ifelse()
+```{webr-r}
+# Etiquetar productos como "Alto" o "Bajo" precio
+ventas_d <- mutate(ventas, 
+                   rango = ifelse(precio > 100, "A", "B"))
+ventas_d
+```
+
+**Cómo leer esto:** "Para cada fila, si el precio es mayor a 100 escribe `"A"`, si no escribe `"B"`."
+
+Cuando necesitas **tres o más categorías**, `ifelse()` anidado se vuelve difícil de leer. Para esos casos existe `case_when()` — explóralo en la [documentación de dplyr](https://dplyr.tidyverse.org/reference/case_when.html) cuando lo necesites.
+
+---
+
+### Mini-ejercicio
+
+Con el dataset `ventas`, crea una nueva columna `tipo_venta` que clasifique cada transacción así:
+
+- `"Alta"` si el ingreso (`precio * cantidad`) supera 500
+- `"Baja"` en cualquier otro caso
+
+Guarda el resultado en `ventas_tipo` e imprímelo.
+```{webr-r}
+# Tu código aquí
+ventas_tipo <- mutate(ventas,
+                      tipo_venta = ___(___ , ___, ___))
+ventas_tipo
+```
+
+::: {.callout-practice}
+**Pista**
+
+Necesitas calcular el ingreso *dentro* de la condición: `precio * cantidad > 500`.
+No es necesario crear la columna `ingreso` primero — `mutate()` puede evaluarla directamente.
+:::
+
+<!--=================-->
+<!--=================-->
+# Resúmenes globales
+
+## summarise(): Colapsar datos en un resumen
+
+La lógica de trabajo sigue siendo la misma:
+
+```
+resultado <- verbo(datos, argumentos)
+```
+
+`summarise()` es diferente a todos los verbos que hemos visto hasta ahora. `select()`, `mutate()` y `arrange()` devuelven un data frame con el mismo número de filas que el original. `summarise()` hace algo distinto: **colapsa todas las filas en una sola**, calculando una estadística que representa al grupo completo. Pensemos en ello así: si `mutate()` añade una columna nueva a cada fila, `summarise()` toma todas las filas y las "aplasta" en un único número.
+
+### Un solo estadístico
+
+La forma más simple: pedirle a `summarise()` un único valor.
+
+```{webr-r}
+## ¿Cuál es el precio promedio de todas las transacciones?
+resumen_p <- summarise(ventas, precio_p = mean(precio))
+
+# ver resultado
+resumen_p
+```
+
+**Qué pasó:** el data frame `ventas` tenía 9 filas. `summarise()` las leyó todas, calculó el promedio de la columna `precio`, y devolvió **una sola fila** con ese resultado. El nombre `precio_p` es el que nosotros elegimos para la columna de salida.
+
+### Varios estadísticos a la vez
+
+Podemos pedir múltiples resúmenes en una sola llamada. Cada uno se convierte en una columna del resultado:
+
+```{webr-r}
+## Resumen global de precios con varios estadísticos
+resumen_glo <- summarise(ventas,
+                         precio_promedio = mean(precio),
+                         precio_minimo   = min(precio),
+                         precio_maximo   = max(precio),
+                         n_transacciones = n())
+
+## ver resultado
+resumen_glo
+```
+
+**Qué pasó:** el mismo proceso de antes, pero ahora `summarise()` calculó cuatro estadísticos simultáneamente. El resultado sigue siendo **una sola fila**, pero ahora tiene cuatro columnas —una por cada estadístico que pedimos. La función especial `n()` no recibe ninguna columna como argumento: simplemente cuenta cuántas filas había en el dataset antes de colapsar.
+
+::: {.callout-key}
+**Funciones de resumen más comunes**
+
+**Tendencia central:** `mean()` (promedio), `median()` (mediana)
+
+**Dispersión:** `sd()` (desviación estándar), `IQR()` (rango intercuartílico)
+
+**Extremos:** `min()`, `max()`
+
+**Conteos:** `n()` (número de filas), `n_distinct()` (valores únicos), `sum()`
+:::
+
+### Mini-ejercicio
+
+Usando `filter()`, `mutate()` y `summarise()`, calcula el ingreso total y el ticket promedio de las transacciones de la categoría **Software**. Guarda el resultado en `resumen_soft` e imprímelo.
+
+```{webr-r}
+# Paso 1: filtrar solo Software
+ventas_soft <- filter(___, ___ == ___)
+
+# Paso 2: calcular ingreso por fila
+ventas_soft_ing <- mutate(___, ingreso = ___ * ___)
+
+# Paso 3: resumir
+resumen_soft <- summarise(___,
+                          ingreso_total   = ___,
+                          ticket_promedio = ___,
+                          n_ventas        = ___
+)
+resumen_soft
+```
+
+::: {.callout-practice}
+**Pista**
+
+`ingreso` no existe en el dataset original — hay que crearla con `mutate()` antes de poder usarla en `summarise()`. Si ves un error que dice `object 'ingreso' not found`, significa que saltaste el Paso 2.
+
+**Resultado esperado:** una sola fila con `ingreso_total = 1710`, `ticket_promedio = 427.5` y `n_ventas = 4`.
+:::
+
+
+<!--=================-->
+# Descriptivas por grupo
+
+## ¿Qué significa agrupar?
+
+`summarise()` sin agrupación produce una sola fila para todo el dataset. Pero casi siempre queremos comparar segmentos:
+
+- Ventas **por región**
+- Ticket promedio **por vendedor**
+- Ingreso **por categoría**
+
+Para eso usamos `group_by()` antes de `summarise()`.
+
+::: {.callout-key}
+**Concepto de granularidad**
+
+| Operación | Resultado |
+|-----------|-----------|
+| `summarise()` sin grupo | 1 fila — resumen de todo |
+| `group_by(region)` + `summarise()` | 1 fila por cada región |
+| `group_by(region, categoria)` + `summarise()` | 1 fila por cada combinación región × categoría |
+
+La granularidad define **a qué nivel** hacemos el análisis.
+:::
+
+## group_by() + summarise(): el dúo central
+
+`group_by()` marca el dataset como agrupado. `summarise()` calcula los resúmenes dentro de cada grupo:
+
+```{webr-r}
+# Paso 1: calcular ingreso por transacción
+ventas_ing <- mutate(ventas, ingreso = precio * cantidad)
+
+# Paso 2: agrupar por región
+ventas_ing_g <- group_by(ventas_ing, region)
+
+# Paso 3: resumir por grupo
+kpis_region <- summarise(ventas_ing_g,
+                         ingreso_total   = sum(ingreso),
+                         n_transacciones = n()
+                         )
+kpis_region
+```
+
+**Cómo leer el resultado:** Cada fila es una región. Podemos ver de un vistazo cuánto generó cada una y cuántas transacciones tuvo.
+
+::: {.callout-key}
+**¿Qué hace group_by() exactamente?**
+
+`group_by()` no cambia el data frame visualmente. Lo que hace es marcar el objeto como "agrupado". Puedes verificarlo ejecutando el objeto después de agrupar: verás `# Groups: region [3]` encima de la tabla.
+
+Cuando el siguiente paso es `summarise()`, R calcula las estadísticas **por separado para cada grupo**.
+:::
+
+## Múltiples KPIs por grupo
+
+Hasta ahora calculamos uno o dos estadísticos por grupo. En la práctica, casi siempre necesitamos varios KPIs a la vez para tener una visión completa del desempeño de cada segmento.
+
+```{webr-r}
+## Paso 1: crear ingreso
+ventas_ing <- mutate(ventas, ingreso = precio * cantidad)
+
+## Paso 2: agrupar por región
+ventas_agr <- group_by(ventas_ing, region)
+
+## Paso 3: calcular múltiples KPIs
+kpis_region <- summarise(ventas_agr,
+                         ingreso_total   = sum(ingreso),
+                         ticket_promedio = mean(ingreso),
+                         n_transacciones = n(),
+                         .groups = "drop")
+
+## ver resultado
+kpis_region
+```
+
+**Qué pasó:** cada región tiene ahora tres métricas. Podemos compararlas de un vistazo: cuál generó más ingresos, cuál tiene el ticket promedio más alto, cuál es más activa. El argumento `.groups = "drop"` desagrupa el resultado automáticamente — sin esto, el objeto quedaría marcado como agrupado y podría generar resultados inesperados en pasos posteriores.
+
+::: {.callout-connect}
+**De tabla a decisión**
+
+Esta tabla es el punto de partida para decisiones concretas:
+
+- Invertir más presupuesto de marketing en la región de mayor ingreso
+- Capacitar vendedores en regiones con ticket promedio bajo
+- Redistribuir esfuerzos según volumen de transacciones
+
+La analítica descriptiva diagnostica; la decisión la toma el negocio.
+:::
+
+---
+
+## Agrupar por múltiples variables
+
+A veces necesitamos mayor granularidad. Además de comparar regiones, queremos ver qué pasa **dentro de cada región** según otra dimensión: categoría de producto, trimestre, canal de venta, etc.
+
+Cuando agrupamos por dos variables, obtenemos una fila por cada **combinación** única de esas variables.
+
+```{webr-r}
+## Calcular ingreso
+ventas_ing <- mutate(ventas, ingreso = precio * cantidad)
+
+## Agrupar por región Y categoría
+ventas_agr <- group_by(ventas_ing, region, categoria)
+
+## Resumir
+kpis_rc <- summarise(ventas_agr,
+                     ingreso_total = sum(ingreso),
+                     n_trans = n(),
+                     .groups = "drop")
+
+## ver resultado
+kpis_rc
+```
+
+**Qué pasó:** ahora cada fila representa una combinación región × categoría. Por ejemplo, podemos ver cuánto generó Hardware en la región Norte, cuánto Software en el Sur, etc. Esto nos ayuda a identificar qué categoría domina en cada zona geográfica.
+
+**Pregunta de análisis:** ¿En qué regiones deberíamos promocionar más Software? Busca las regiones donde Software tiene bajo `ingreso_total` o bajo `n_trans`.
+
+---
+
+## count(): atajo para contar frecuencias
+
+Cuando solo necesitamos saber **cuántas filas hay por grupo**, escribir `group_by() + summarise(n = n())` es innecesariamente largo. `count()` hace exactamente eso en una sola función.
+
+```{webr-r}
+## ¿Cuántas transacciones por región?
+conteo_region <- count(ventas, region)
+conteo_region
+```
+
+**Equivalente largo:**
+```r
+ventas_agr <- group_by(ventas, region)
+conteo <- summarise(ventas_agr, n = n(), .groups = "drop")
+```
+
+Si además queremos ordenar de mayor a menor, usamos `sort = TRUE`:
+
+```{webr-r}
+## ¿Qué producto se vendió más veces?
+count(ventas, producto, sort = TRUE)
+```
+
+**Cuándo usar `count()`:** cuando solo te interesa la frecuencia. Si necesitas calcular otras métricas (promedios, totales, etc.), usa `group_by() + summarise()`.
+
+---
+
+## distinct() y n_distinct(): explorar categorías
+
+A veces no queremos resumir datos, solo queremos saber **qué valores únicos** tiene una variable.
+
+### distinct(): mostrar valores únicos
+
+```{webr-r}
+## ¿Qué regiones tenemos en el dataset?
+distinct(ventas, region)
+```
+
+```{webr-r}
+## ¿Qué combinaciones de región y categoría existen?
+distinct(ventas, region, categoria)
+```
+
+**Para qué sirve:** exploración rápida del dataset. Antes de filtrar o agrupar, es útil ver qué valores existen.
+
+### n_distinct(): contar valores únicos
+
+Cuando lo que necesitamos es el **número** de valores únicos (no verlos), usamos `n_distinct()` dentro de `summarise()`:
+
+```{webr-r}
+## ¿Cuántos productos diferentes se vendieron por región?
+ventas_agr <- group_by(ventas, region)
+
+diversidad <- summarise(ventas_agr,
+                        n_productos = n_distinct(producto),
+                        .groups = "drop")
+diversidad
+```
+
+**Qué pasó:** cada región tiene su conteo de productos únicos. Esto nos dice qué tan diversificado está el catálogo en cada zona.
+
+::: {.callout-practice}
+**distinct() vs. n_distinct()**
+
+- `distinct(ventas, region)` → tabla con los valores únicos de región
+- `n_distinct(region)` dentro de `summarise()` → un número (cuántos valores únicos)
+
+Usa `distinct()` para **ver**, `n_distinct()` para **contar**.
+:::
+
+---
+
+## Mini-ejercicio final
+
+Usando lo aprendido, responde:
+
+**P1.** ¿Cuántos productos distintos se vendieron en Q2?
+
+**P2.** ¿Cuál es el ingreso total por trimestre? Ordena de mayor a menor.
+
+**P3.** ¿Cuál es el ticket promedio (`ingreso / n_trans`) de Hardware vs. Software?
+
+```{webr-r}
+## P1
+
+
+## P2
+
+
+## P3
+
+
+```
+
+::: {.callout-practice}
+**Pistas**
+
+- P1: `filter()` + `n_distinct()` dentro de `summarise()`
+- P2: `mutate()` → `group_by(trimestre)` → `summarise()` → `arrange()`
+- P3: `mutate()` → `group_by(categoria)` → `summarise()` con promedio de ingreso
+:::
+
+---
+
+<!--=================-->
+<!--=================-->
+# Working directory y organización
+
+## ¿Qué es el working directory?
+
+El **working directory** (directorio de trabajo) es la carpeta en la que R está "parado" en este momento. Cuando le pides leer o guardar un archivo sin especificar la ruta completa, R busca en esta carpeta.
+
+```{webr-r}
+## Ver cuál es el directorio actual
+getwd()
+```
+
+**¿Por qué importa?** Si intentas leer `"ventas.csv"` y R no encuentra el archivo, probablemente es porque el archivo está en otra carpeta y R está buscando en el working directory equivocado.
+
+---
+
+## RStudio Projects: la mejor práctica
+
+En lugar de cambiar el working directory manualmente con `setwd()` (lo cual rompe la reproducibilidad), usa **RStudio Projects**.
+
+::: {.callout-key}
+**Ventajas de RStudio Projects**
+
+✓ R automáticamente establece el working directory en la carpeta del proyecto  
+✓ Cualquiera puede abrir el proyecto y todo funciona sin modificar rutas  
+✓ Cada análisis vive en su propia carpeta organizada  
+✓ R recuerda el historial y los objetos de la última sesión
+
+**Cómo crear uno:**
+
+1. File → New Project...
+2. New Directory → New Project
+3. Dale un nombre descriptivo (ej: `analisis_ventas_2025`)
+4. R crea una carpeta con un archivo `.Rproj`
+
+**Cómo usarlo:** abre siempre el proyecto haciendo doble clic en el archivo `.Rproj`, **no** abriendo RStudio directamente.
+:::
+
+---
+
+## Estructura de carpetas recomendada
+
+```
+analisis_ventas_2025/
+├── analisis_ventas_2025.Rproj   # archivo del proyecto
+├── data/                        # datos crudos (NUNCA modificar)
+│   └── ventas.csv
+├── scripts/                     # código R
+│   ├── 01_limpieza.R
+│   └── 02_analisis.R
+└── outputs/                     # resultados generados
+    ├── kpis_region.csv
+    └── grafico_ventas.png
+```
+
+**Regla de oro:** el contenido de `data/` es intocable. Si necesitas modificar datos, hazlo en el script y guarda el resultado en `outputs/`.
+
+---
+
+## Guardar una tabla como CSV
+
+Una vez que tenemos nuestra tabla final de KPIs, podemos exportarla para compartirla o usarla en otras herramientas (Excel, Power BI, etc.):
+
+```r
+## Guardar tabla de KPIs en la carpeta outputs
+write.csv(kpis_region, "outputs/kpis_region.csv", row.names = FALSE)
+```
+
+**Nota:** `row.names = FALSE` evita que R agregue una columna extra con números de fila.
+
+---
+
+<!--=================-->
+<!--=================-->
+# Errores comunes y cómo evitarlos
+
+Estos son los 5 errores más frecuentes al aprender `dplyr`. Si los reconoces y evitas, ahorrarás mucho tiempo de debugging.
+
+---
+
+## 1. No guardar el resultado
+
+```r
+## INCORRECTO: se muestra en la consola pero no se guarda
+filter(ventas, region == "Norte")
+
+## CORRECTO: asignar a un objeto
+ventas_norte <- filter(ventas, region == "Norte")
+```
+
+**Por qué pasa:** olvidamos que R no modifica objetos automáticamente. Cada transformación debe guardarse explícitamente con `<-`.
+
+---
+
+## 2. Confundir `=` con `==`
+
+```r
+## INCORRECTO
+filter(ventas, region = "Norte")   # Error: unexpected '='
+
+## CORRECTO
+filter(ventas, region == "Norte")
+```
+
+**Por qué pasa:** en matemáticas usamos `=` para igualdades. En R, `=` asigna valores (como `<-`) y `==` compara. Dentro de `filter()`, siempre `==`.
+
+---
+
+## 3. Usar una variable que no existe todavía
+
+```r
+## INCORRECTO: ingreso no existe en ventas
+resumen_mal <- summarise(ventas, total = sum(ingreso))
+# Error: object 'ingreso' not found
+
+## CORRECTO: crear la variable primero
+ventas_ing <- mutate(ventas, ingreso = precio * cantidad)
+resumen_ok <- summarise(ventas_ing, total = sum(ingreso))
+```
+
+**Por qué pasa:** `mutate()` crea columnas nuevas. Si queremos usarlas en pasos posteriores, primero hay que crearlas y guardar el resultado.
+
+---
+
+## 4. Olvidar que group_by() no hace nada solo
+
+```{webr-r}
+## group_by() SOLO marca el dataset como agrupado
+ventas_agrupado <- group_by(ventas, region)
+ventas_agrupado  
+## ↑ Sigue teniendo 9 filas, solo está "marcado" como agrupado
+```
+
+**Para qué sirve:** `group_by()` no colapsa datos ni calcula nada. Solo prepara el terreno. El cálculo lo hace `summarise()`:
+
+```{webr-r}
+## Ahora sí colapsa
+ventas_agr <- group_by(ventas, region)
+resumen <- summarise(ventas_agr, n = n(), .groups = "drop")
+resumen
+```
+
+---
+
+## 5. Confundir mutate() con summarise()
+
+Este es el error conceptual más común. Ambas funciones crean columnas, pero funcionan de forma radicalmente distinta.
+
+::: {.callout-key}
+**Regla mnemotécnica**
+
+- `mutate()` → **M**antiene el número de filas. Añade una columna calculada para **cada fila**.
+- `summarise()` → **S**intetiza. Colapsa todas las filas en **un resumen**.
+
+**¿Cuándo usar cuál?**
+
+- Quieres calcular algo **para cada transacción** (margen, descuento, categoría)? → `mutate()`
+- Quieres un **total, promedio o conteo global**? → `summarise()`
+
+**Ejemplo:**
+
+```r
+## mutate: 9 filas → 9 filas (con nueva columna)
+ventas_ing <- mutate(ventas, ingreso = precio * cantidad)
+
+## summarise: 9 filas → 1 fila (resumen global)
+resumen <- summarise(ventas_ing, total = sum(ingreso))
+```
+:::
+
+---
+
+<!--=================-->
+<!--=================-->
+# Checklist de salida
+
+Al terminar esta semana, debes poder:
+
+- [ ] Explicar con tus palabras qué hace cada verbo de `dplyr`
+- [ ] Leer un bloque de código con objetos intermedios y describir el flujo paso a paso
+- [ ] Filtrar datos usando condiciones simples (`==`, `>`) y combinadas (`&`, `|`)
+- [ ] Crear variables calculadas con `mutate()` y clasificarlas con `ifelse()`
+- [ ] Generar tablas de KPIs con `group_by() + summarise()`
+- [ ] Interpretar una tabla resumida y conectarla con una decisión de negocio
+- [ ] Reconocer y corregir los 5 errores comunes de esta semana
+- [ ] Organizar un proyecto de análisis con RStudio Projects
+
+---
+
+<!--=================-->
+<!--=================-->
+# Preguntas de comprensión
+
+## 1. Interpretación de output
+
+Ejecuta el código y responde:
+
+```{webr-r}
+ventas_agr <- group_by(ventas, categoria)
+
+resultado <- summarise(ventas_agr,
+                       n = n(),
+                       precio_medio = mean(precio),
+                       .groups = "drop")
+
+resultado
+```
+
+**Pregunta:** ¿Qué representa cada fila? ¿Cuántas filas esperabas y por qué?
+
+---
+
+## 2. Orden de operaciones
+
+¿Cuál es la diferencia entre estos dos bloques?
+
+```{webr-r}
+## Bloque A
+ventas_filtrado <- filter(ventas, precio > 100)
+ventas_agr_A <- group_by(ventas_filtrado, region)
+resumen_A <- summarise(ventas_agr_A, n = n(), .groups = "drop")
+resumen_A
+```
+
+```{webr-r}
+## Bloque B
+ventas_agr_B <- group_by(ventas, region)
+resumen_B <- summarise(ventas_agr_B, n = n(), .groups = "drop")
+resumen_filtrado_B <- filter(resumen_B, n > 2)
+resumen_filtrado_B
+```
+
+**Respuesta esperada:**
+
+- Bloque A: filtra transacciones con precio > 100 **primero**, luego cuenta por región.
+- Bloque B: cuenta todas las transacciones por región **primero**, luego filtra regiones con más de 2 transacciones.
+
+Son preguntas distintas con resultados distintos.
+
+---
+
+## 3. Aplicación práctica
+
+Tienes un dataset de clientes con columnas `cliente_id`, `compras_totales`, `region`.
+
+**¿Cómo identificarías los 5 mejores clientes de cada región por monto de compras?**
+
+```{webr-r}
+## Escribe tu solución aquí:
+## Pista: necesitas group_by(), arrange() y un método para quedarte con los primeros 5
+
+
+```
+
+---
+
+<!--=================-->
+<!--=================-->
+
+```{=html}
+<!-- Panel Environment -->
+<div id="env-panel" class="collapsed">
+  <div id="env-header" onclick="toggleEnvPanel()">
+    <span id="env-header-left">&#x1F4E6; Environment</span>
+    <span id="env-header-right">
+      <button class="env-btn" id="env-refresh-btn" onclick="event.stopPropagation(); refreshEnv()" title="Actualizar">&#x1F504;</button>
+      <button class="env-btn" id="env-toggle-btn" title="Expandir/Colapsar">&#x25B2;</button>
+    </span>
+  </div>
+  <div id="env-status">Esperando webR...</div>
+  <div id="env-body">
+    <div class="env-empty">Ejecuta un bloque de codigo para ver objetos aqui.</div>
+  </div>
+</div>
+
+<script type="module">
+window.toggleEnvPanel = function() {
+  const panel = document.getElementById('env-panel');
+  const btn   = document.getElementById('env-toggle-btn');
+  panel.classList.toggle('collapsed');
+  btn.innerHTML = panel.classList.contains('collapsed') ? '\u25B2' : '\u25BC';
+};
+
+async function getEnvData() {
+  if (!globalThis.mainWebR) return [];
+  try {
+    const shelter = await new globalThis.mainWebR.Shelter();
+    const result  = await shelter.evalR(`
+      local({
+        objs <- ls(envir = .GlobalEnv)
+        if (length(objs) == 0) return("")
+        info <- vapply(objs, function(nm) {
+          obj <- get(nm, envir = .GlobalEnv)
+          cls <- paste(class(obj), collapse = ", ")
+          len <- length(obj)
+          dm  <- if (!is.null(dim(obj))) paste(dim(obj), collapse = "x") else ""
+          prev <- tryCatch({
+            if (is.data.frame(obj)) {
+              paste(names(obj), collapse = ", ")
+            } else if (is.function(obj)) {
+              a <- names(formals(obj))
+              paste0("function(", paste(a, collapse = ", "), ")")
+            } else if (is.atomic(obj) && len <= 6) {
+              paste(format(obj, digits = 4), collapse = ", ")
+            } else if (is.atomic(obj) && len > 6) {
+              paste(c(format(head(obj, 5), digits = 4), "..."), collapse = ", ")
+            } else if (is.list(obj)) {
+              paste0("List of ", len)
+            } else { "" }
+          }, error = function(e) "")
+          paste(nm, cls, len, dm, prev, sep = "\\t")
+        }, character(1))
+        paste(info, collapse = "\\n")
+      })
+    `);
+    const raw = await result.toString();
+    shelter.purge();
+    if (!raw || raw === '') return [];
+    return raw.split('\n').map(line => {
+      const p = line.split('\t');
+      return { name: p[0], cls: p[1], len: p[2], dim: p[3], preview: p[4] || '' };
+    });
+  } catch (e) {
+    console.warn('Env panel error:', e);
+    return [];
+  }
+}
+
+function renderEnv(items) {
+  const body   = document.getElementById('env-body');
+  const status = document.getElementById('env-status');
+  if (items.length === 0) {
+    body.innerHTML = '<div class="env-empty">No hay objetos en el environment global.</div>';
+    status.textContent = '0 objetos';
+    return;
+  }
+  status.textContent = items.length + ' objeto' + (items.length > 1 ? 's' : '');
+  body.innerHTML = items.map(it => {
+    let meta = '<span class="env-badge">' + escHtml(it.cls) + '</span>';
+    if (it.dim) {
+      meta += it.dim.replace('x', ' obs. \u00D7 ') + ' vars.';
+    } else {
+      meta += 'Length: ' + it.len;
+    }
+    let prev = it.preview ? '<div class="env-item-preview">' + escHtml(it.preview) + '</div>' : '';
+    return '<div class="env-item">' +
+           '  <div class="env-item-name">' + escHtml(it.name) + '</div>' +
+           '  <div class="env-item-meta">' + meta + '</div>' +
+           prev +
+           '</div>';
+  }).join('');
+}
+
+function escHtml(s) {
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+async function updateEnvPanel() {
+  const items = await getEnvData();
+  renderEnv(items);
+}
+window.refreshEnv = function() {
+  const btn = document.getElementById('env-refresh-btn');
+  btn.style.animation = 'none';
+  void btn.offsetWidth;
+  updateEnvPanel();
+};
+
+function moveWebRStatus() {
+  const anchor = document.getElementById('webr-status-anchor');
+  const statusArea = document.getElementById('qwebr-status-message-area');
+  if (anchor && statusArea) {
+    const wrapper = statusArea.closest('.quarto-title-meta');
+    if (wrapper) {
+      wrapper.style.display = 'inline';
+      wrapper.style.fontSize = '13px';
+      wrapper.style.marginLeft = '30px';
+      anchor.parentNode.insertBefore(wrapper, anchor);
+    }
+  }
+}
+
+async function init() {
+  while (!globalThis.qwebrInstance) {
+    await new Promise(r => setTimeout(r, 300));
+  }
+  await globalThis.qwebrInstance;
+  document.getElementById('env-status').textContent = 'webR listo. Esperando ejecucion...';
+  moveWebRStatus();
+
+  await new Promise(resolve => {
+    const check = setInterval(() => {
+      const btns = document.querySelectorAll('.qwebr-button-run');
+      if (btns.length === 0 || Array.from(btns).some(b => !b.disabled)) {
+        clearInterval(check);
+        resolve();
+      }
+    }, 400);
+  });
+
+  const original = globalThis.qwebrComputeEngine;
+  globalThis.qwebrComputeEngine = async function(...args) {
+    const res = await original.apply(this, args);
+    setTimeout(updateEnvPanel, 150);
+    return res;
+  };
+
+  const panel = document.getElementById('env-panel');
+  if (panel.classList.contains('collapsed')) {
+    toggleEnvPanel();
+  }
+  await updateEnvPanel();
+}
+
+init();
+</script>
+```
