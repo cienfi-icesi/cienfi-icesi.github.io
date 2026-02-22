@@ -503,27 +503,54 @@
             text-align: center;
         }
 
-        .contact-email {
+
+        /* Copy email styles */
+        .copy-email {
             display: inline-flex;
             align-items: center;
-            gap: 0.75rem;
-            padding: 1.2rem 2.5rem;
-            background: var(--bg-white);
-            border: 2px solid var(--primary-blue);
-            border-radius: 12px;
+            gap: 0.5rem;
             color: var(--primary-blue);
-            text-decoration: none;
             font-weight: 700;
-            font-size: 1.2rem;
+            cursor: pointer;
             transition: all 0.3s ease;
-            margin: 1.5rem 0;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            position: relative;
         }
 
-        .contact-email:hover {
+        .copy-email:hover {
+            background: var(--light-blue);
+        }
+
+        .copy-icon {
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        .copy-email:hover .copy-icon {
+            opacity: 1;
+        }
+
+        /* Toast notification for copy confirmation */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
             background: var(--primary-blue);
             color: white;
-            transform: scale(1.05);
-            box-shadow: var(--shadow-md);
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            display: none;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+            z-index: 10000;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .toast.show {
+            display: flex;
         }
 
         footer {
@@ -742,7 +769,7 @@
                     <p class="card-description" style="max-width: 600px; margin: 0 auto 2rem; font-size: 1.1rem;">
                         Para consultas sobre nuestros workshops, contáctanos:
                     </p>
-                 <span class="copy-email" 
+                        <span class="copy-email" 
                             onclick="copyEmail('cienfi@icesi.edu.co'); return false;" 
                             title="Clic para copiar">
                             <strong>cienfi@icesi.edu.co</strong>
