@@ -16,16 +16,21 @@ rm(list = ls())
 
 # install.packages("tidyverse")  # correr solo una vez en la Consola
 # install.packages("janitor")    # correr solo una vez en la Consola
+# install.packages("rio")    # correr solo una vez en la Consola
+
 
 library(tidyverse)
 library(janitor)
+library(rio)
 
 
 # -----------------------------------------------------------------------------
 # 1. CARGA DE DATOS
 # -----------------------------------------------------------------------------
 
-bd <- read_csv("input/bd.csv")
+# bd <- read_csv("input/bd.csv")
+bd <- import("https://cienfi-icesi.github.io/data/week-02/database.csv")
+
 
 str(bd)   # estructura original: mayúsculas, tildes, espacios
 
